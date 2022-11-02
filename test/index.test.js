@@ -18,16 +18,41 @@ let options = {
 }
 let service
 
-async function upload(filePath, contentType, signedUrl) {
+const prefix = 'feathers-s3'
+const textFileId = prefix + '/text.txt'
+const imageFileId = prefix + '/image.png'
+const archiveFileId = prefix + '/arvhive.zip'
+let textFileSize 
+let imageFileSize
+let archiveFileSize
+
+// Upload helper function
+async function upload (signedUrl, mimeType, filePath) {
   const fileSize = fs.statSync(filePath).size
   const fileStream = fs.createReadStream(filePath)
   return fetch(signedUrl, {
     method: 'PUT',
     body: fileStream,
     headers: {
-      'Content-Type': contentType,
+      'Content-Type': mimeType,
       'Content-Length': fileSize
     }
+  })
+}
+
+// Download helper function
+async function download (signedUrl, mimeType, filePath) {
+  const response = await fetch(signedUrl, {
+    method: 'GET',
+    headers: {
+      'Content-Type': mimeType
+    }
+  })
+  return new Promise((resolve, reject) => {
+    const fileStream = fs.createWriteStream(filePath)
+    response.body.pipe(fileStream);
+    fileStream.on('close', () => resolve(200))
+    fileStream.on('error', reject)
   })
 }
 
@@ -41,32 +66,77 @@ describe('feathers-s3', () => {
   })
   it('upload text file', async () => {
     const data = {
-      id: 'feathers-s3/text.txt',
+      id: textFileId,
       expiresIn: 60
     }
-    const { id, signedUrl } = await service.create(data)
+    const { signedUrl } = await service.create(data)
     expect(signedUrl).to.exist
-    const response = await upload('test/data/text.txt', 'text/plain', signedUrl)
+    const response = await upload(signedUrl, 'text/plain', 'test/data/text.txt')
     expect(response.status).to.equal(200)
   })
   it('upload image file', async () => {
     const data = {
-      id: 'feathers-s3/image.png',
+      id: imageFileId,
       expiresIn: 60
     }
-    const { id, signedUrl } = await service.create(data)
+    const { signedUrl } = await service.create(data)
     expect(signedUrl).to.exist
-    const response = await upload('test/data/image.png', 'image/png', signedUrl)
+    const response = await upload(signedUrl,'image/png', 'test/data/image.png')
     expect(response.status).to.equal(200)
   })
   it('upload zip file', async () => {
     const data = {
-      id: 'feathers-s3/archive.zip',
+      id: archiveFileId,
       expiresIn: 60
     }
-    const { id, signedUrl } = await service.create(data)
+    const { signedUrl } = await service.create(data)
     expect(signedUrl).to.exist
-    const response = await upload('test/data/archive.zip', 'application/zip', signedUrl)
+    const response = await upload(signedUrl, 'application/zip', 'test/data/archive.zip')
     expect(response.status).to.equal(200)
+  })
+  it('download text file', async () => {
+    const filePath = 'test/data/downloaded-text.txt'
+    const { status, signedUrl } = await service.get(textFileId, { expiresIn: 60 })
+    expect(status).to.equal('ok')
+    expect(signedUrl).to.exist
+    const response = await download(signedUrl, 'text/plain', filePath)
+    expect(response).to.equal(200)
+    const fileStats = fs.statSync(filePath)
+    expect(fileStats.size).to.equal(757)
+    fs.unlinkSync(filePath)
+  })
+  it('download image file', async () => {
+    const filePath = 'test/data/downloaded-image.png'
+    const { status, signedUrl } = await service.get(imageFileId, { expiresIn: 60 })
+    expect(status).to.equal('ok')
+    expect(signedUrl).to.exist
+    const response = await download(signedUrl, 'image/png', filePath)
+    expect(response).to.equal(200)
+    const fileStats = fs.statSync(filePath)
+    expect(fileStats.size).to.equal(13312)
+    fs.unlinkSync(filePath)
+  })
+  it('download archive file', async () => {
+    const filePath = 'test/data/downloaded-archive.zip'
+    const { status, signedUrl } = await service.get(archiveFileId, { expiresIn: 60 })
+    expect(status).to.equal('ok')
+    expect(signedUrl).to.exist
+    const response = await download(signedUrl, 'application/zip', filePath)
+    expect(response).to.equal(200)
+    const fileStats = fs.statSync(filePath)
+    expect(fileStats.size).to.equal(13464)
+    fs.unlinkSync(filePath)
+  })
+  it('delete text file', async () => {
+    const { status } = await service.remove(textFileId, { expiresIn: 60 })
+    expect(status).to.equal('ok')
+  })
+  it('delete image file', async () => {
+    const { status } = await service.remove(imageFileId, { expiresIn: 60 })
+    expect(status).to.equal('ok')
+  })
+  it('delete archive file', async () => {
+    const { status } = await service.remove(archiveFileId, { expiresIn: 60 })
+    expect(status).to.equal('ok')
   })
 })
