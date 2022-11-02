@@ -101,8 +101,7 @@ describe('feathers-s3', () => {
     expect(signedUrl).to.exist
     const response = await download(signedUrl, 'text/plain', filePath)
     expect(response).to.equal(200)
-    const fileStats = fs.statSync(filePath)
-    expect(fileStats.size).to.equal(757)
+    expect(fs.existsSync(filePath)).to.true
     fs.unlinkSync(filePath)
   })
   it('download image file', async () => {
@@ -112,8 +111,7 @@ describe('feathers-s3', () => {
     expect(signedUrl).to.exist
     const response = await download(signedUrl, 'image/png', filePath)
     expect(response).to.equal(200)
-    const fileStats = fs.statSync(filePath)
-    expect(fileStats.size).to.equal(13312)
+    expect(fs.existsSync(filePath)).to.true
     fs.unlinkSync(filePath)
   })
   it('download archive file', async () => {
@@ -123,8 +121,7 @@ describe('feathers-s3', () => {
     expect(signedUrl).to.exist
     const response = await download(signedUrl, 'application/zip', filePath)
     expect(response).to.equal(200)
-    const fileStats = fs.statSync(filePath)
-    expect(fileStats.size).to.equal(13464)
+    expect(fs.existsSync(filePath)).to.true
     fs.unlinkSync(filePath)
   })
   it('delete text file', async () => {
