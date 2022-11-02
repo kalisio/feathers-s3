@@ -1,10 +1,11 @@
 
-import { expect } from 'chai'
+import chai, { util, expect } from 'chai'
+import chailint from 'chai-lint'
 import { Service } from '../lib/index.js'
 import fetch from 'node-fetch'
 import fs from 'fs'
 
-let options = {
+const options = {
   s3Client: {
     credentials: {
       accessKeyId: process.env.S3_ACCESS_KEY_ID,
@@ -22,9 +23,6 @@ const prefix = 'feathers-s3'
 const textFileId = prefix + '/text.txt'
 const imageFileId = prefix + '/image.png'
 const archiveFileId = prefix + '/arvhive.zip'
-let textFileSize 
-let imageFileSize
-let archiveFileSize
 
 // Upload helper function
 async function upload (signedUrl, mimeType, filePath) {
@@ -50,19 +48,22 @@ async function download (signedUrl, mimeType, filePath) {
   })
   return new Promise((resolve, reject) => {
     const fileStream = fs.createWriteStream(filePath)
-    response.body.pipe(fileStream);
+    response.body.pipe(fileStream)
     fileStream.on('close', () => resolve(200))
     fileStream.on('error', reject)
   })
 }
 
 describe('feathers-s3', () => {
+  before(() => {
+    chailint(chai, util)
+  })
   it('is ES module compatible', () => {
     expect(typeof Service).to.equal('function')
   })
   it('create the service', () => {
     service = new Service(options)
-    expect(service).to.exist
+    expect(service).toExist()
   })
   it('upload text file', async () => {
     const data = {
@@ -70,7 +71,7 @@ describe('feathers-s3', () => {
       expiresIn: 60
     }
     const { signedUrl } = await service.create(data)
-    expect(signedUrl).to.exist
+    expect(signedUrl).toExist()
     const response = await upload(signedUrl, 'text/plain', 'test/data/text.txt')
     expect(response.status).to.equal(200)
   })
@@ -80,8 +81,8 @@ describe('feathers-s3', () => {
       expiresIn: 60
     }
     const { signedUrl } = await service.create(data)
-    expect(signedUrl).to.exist
-    const response = await upload(signedUrl,'image/png', 'test/data/image.png')
+    expect(signedUrl).toExist()
+    const response = await upload(signedUrl, 'image/png', 'test/data/image.png')
     expect(response.status).to.equal(200)
   })
   it('upload zip file', async () => {
@@ -90,7 +91,7 @@ describe('feathers-s3', () => {
       expiresIn: 60
     }
     const { signedUrl } = await service.create(data)
-    expect(signedUrl).to.exist
+    expect(signedUrl).toExist()
     const response = await upload(signedUrl, 'application/zip', 'test/data/archive.zip')
     expect(response.status).to.equal(200)
   })
@@ -98,30 +99,30 @@ describe('feathers-s3', () => {
     const filePath = 'test/data/downloaded-text.txt'
     const { status, signedUrl } = await service.get(textFileId, { expiresIn: 60 })
     expect(status).to.equal('ok')
-    expect(signedUrl).to.exist
+    expect(signedUrl).toExist()
     const response = await download(signedUrl, 'text/plain', filePath)
     expect(response).to.equal(200)
-    expect(fs.existsSync(filePath)).to.true
+    expect(fs.existsSync(filePath)).beTrue()
     fs.unlinkSync(filePath)
   })
   it('download image file', async () => {
     const filePath = 'test/data/downloaded-image.png'
     const { status, signedUrl } = await service.get(imageFileId, { expiresIn: 60 })
     expect(status).to.equal('ok')
-    expect(signedUrl).to.exist
+    expect(signedUrl).toExist()
     const response = await download(signedUrl, 'image/png', filePath)
     expect(response).to.equal(200)
-    expect(fs.existsSync(filePath)).to.true
+    expect(fs.existsSync(filePath)).beTrue()
     fs.unlinkSync(filePath)
   })
   it('download archive file', async () => {
     const filePath = 'test/data/downloaded-archive.zip'
     const { status, signedUrl } = await service.get(archiveFileId, { expiresIn: 60 })
     expect(status).to.equal('ok')
-    expect(signedUrl).to.exist
+    expect(signedUrl).toExist()
     const response = await download(signedUrl, 'application/zip', filePath)
     expect(response).to.equal(200)
-    expect(fs.existsSync(filePath)).to.true
+    expect(fs.existsSync(filePath)).beTrue()
     fs.unlinkSync(filePath)
   })
   it('delete text file', async () => {
