@@ -1,9 +1,13 @@
 
 import chai, { util, expect } from 'chai'
 import chailint from 'chai-lint'
+import feathers from '@feathersjs/feathers'
+import configuration from '@feathersjs/configuration'
 import { Service } from '../lib/index.js'
 import fetch from 'node-fetch'
 import fs from 'fs'
+
+let app, service
 
 const options = {
   s3Client: {
@@ -17,7 +21,6 @@ const options = {
   },
   bucket: process.env.S3_BUCKET
 }
-let service
 
 const prefix = 'feathers-s3'
 const textFileId = prefix + '/text.txt'
@@ -57,12 +60,15 @@ async function download (signedUrl, mimeType, filePath) {
 describe('feathers-s3', () => {
   before(() => {
     chailint(chai, util)
+    app = feathers()
+    app.configure(configuration())
   })
   it('is ES module compatible', () => {
     expect(typeof Service).to.equal('function')
   })
   it('create the service', () => {
-    service = new Service(options)
+    app.use('s3', new Service(options))
+    service = app.service('s3')
     expect(service).toExist()
   })
   it('upload text file', async () => {
