@@ -17,11 +17,11 @@ const options = {
     region: process.env.S3_REGION,
     signatureVersion: 'v4'
   },
-  bucket: process.env.S3_BUCKET
+  bucket: process.env.S3_BUCKET,
+  prefix: 'feathers-s3'
 }
 
-const prefix = 'feathers-s3-service'
-const fileKey = prefix + '/text.txt'
+const fileKey = 'text.txt'
 
 describe('feathers-s3-service', () => {
   before(() => {
