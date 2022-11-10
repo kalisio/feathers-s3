@@ -4,8 +4,6 @@ import chailint from 'chai-lint'
 import feathers from '@feathersjs/feathers'
 import configuration from '@feathersjs/configuration'
 import { Service } from '../lib/index.js'
-import fetch from 'node-fetch'
-import fs from 'fs'
 
 let app, service
 
@@ -22,42 +20,10 @@ const options = {
   bucket: process.env.S3_BUCKET
 }
 
-const prefix = 'feathers-s3'
-const textFileId = prefix + '/text.txt'
-const imageFileId = prefix + '/image.png'
-const archiveFileId = prefix + '/arvhive.zip'
+const prefix = 'feathers-s3-service'
+const fileKey = prefix + '/text.txt'
 
-// Upload helper function
-async function upload (signedUrl, mimeType, filePath) {
-  const fileSize = fs.statSync(filePath).size
-  const fileStream = fs.createReadStream(filePath)
-  return fetch(signedUrl, {
-    method: 'PUT',
-    body: fileStream,
-    headers: {
-      'Content-Type': mimeType,
-      'Content-Length': fileSize
-    }
-  })
-}
-
-// Download helper function
-async function download (signedUrl, mimeType, filePath) {
-  const response = await fetch(signedUrl, {
-    method: 'GET',
-    headers: {
-      'Content-Type': mimeType
-    }
-  })
-  return new Promise((resolve, reject) => {
-    const fileStream = fs.createWriteStream(filePath)
-    response.body.pipe(fileStream)
-    fileStream.on('close', () => resolve(200))
-    fileStream.on('error', reject)
-  })
-}
-
-describe('feathers-s3', () => {
+describe('feathers-s3-service', () => {
   before(() => {
     chailint(chai, util)
     app = feathers()
@@ -71,76 +37,24 @@ describe('feathers-s3', () => {
     service = app.service('s3')
     expect(service).toExist()
   })
-  it('upload text file', async () => {
+  it('create \'PUT\' signedUrl', async () => {
     const data = {
-      id: textFileId,
+      id: fileKey,
       expiresIn: 60
     }
-    const { signedUrl } = await service.create(data)
-    expect(signedUrl).toExist()
-    const response = await upload(signedUrl, 'text/plain', 'test/data/text.txt')
+    const response = await service.create(data)
+    expect(response.ok).toExist()
     expect(response.status).to.equal(200)
+    expect(response.signedUrl).toExist()
   })
-  it('upload image file', async () => {
+  it('create \'GET\' signedUrl', async () => {
     const data = {
-      id: imageFileId,
+      id: fileKey,
       expiresIn: 60
     }
-    const { signedUrl } = await service.create(data)
-    expect(signedUrl).toExist()
-    const response = await upload(signedUrl, 'image/png', 'test/data/image.png')
+    const response = await service.create(data)
+    expect(response.ok).toExist()
     expect(response.status).to.equal(200)
-  })
-  it('upload zip file', async () => {
-    const data = {
-      id: archiveFileId,
-      expiresIn: 60
-    }
-    const { signedUrl } = await service.create(data)
-    expect(signedUrl).toExist()
-    const response = await upload(signedUrl, 'application/zip', 'test/data/archive.zip')
-    expect(response.status).to.equal(200)
-  })
-  it('download text file', async () => {
-    const filePath = 'test/data/downloaded-text.txt'
-    const { status, signedUrl } = await service.get(textFileId, { expiresIn: 60 })
-    expect(status).to.equal('ok')
-    expect(signedUrl).toExist()
-    const response = await download(signedUrl, 'text/plain', filePath)
-    expect(response).to.equal(200)
-    expect(fs.existsSync(filePath)).beTrue()
-    fs.unlinkSync(filePath)
-  })
-  it('download image file', async () => {
-    const filePath = 'test/data/downloaded-image.png'
-    const { status, signedUrl } = await service.get(imageFileId, { expiresIn: 60 })
-    expect(status).to.equal('ok')
-    expect(signedUrl).toExist()
-    const response = await download(signedUrl, 'image/png', filePath)
-    expect(response).to.equal(200)
-    expect(fs.existsSync(filePath)).beTrue()
-    fs.unlinkSync(filePath)
-  })
-  it('download archive file', async () => {
-    const filePath = 'test/data/downloaded-archive.zip'
-    const { status, signedUrl } = await service.get(archiveFileId, { expiresIn: 60 })
-    expect(status).to.equal('ok')
-    expect(signedUrl).toExist()
-    const response = await download(signedUrl, 'application/zip', filePath)
-    expect(response).to.equal(200)
-    expect(fs.existsSync(filePath)).beTrue()
-    fs.unlinkSync(filePath)
-  })
-  it('delete text file', async () => {
-    const { status } = await service.remove(textFileId, { expiresIn: 60 })
-    expect(status).to.equal('ok')
-  })
-  it('delete image file', async () => {
-    const { status } = await service.remove(imageFileId, { expiresIn: 60 })
-    expect(status).to.equal('ok')
-  })
-  it('delete archive file', async () => {
-    const { status } = await service.remove(archiveFileId, { expiresIn: 60 })
-    expect(status).to.equal('ok')
+    expect(response.signedUrl).toExist()
   })
 })
