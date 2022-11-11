@@ -30,7 +30,7 @@ const textFileId = 'text.txt'
 const imageFileId = 'image.png'
 const archiveFileId = 'arvhive.zip'
 
-describe('feathers-s3-client2', () => {
+describe('feathers-s3-client', () => {
   before(async () => {
     chailint(chai, util)
     serverApp = express(feathers())
@@ -54,21 +54,21 @@ describe('feathers-s3-client2', () => {
     expect(s3ClientService).toExist()
   })
   it('upload text file', async () => {
-    const blob = new Blob([ fs.readFileSync('test/data/text.txt') ], { type: 'text/plain'})
+    const blob = new Blob([fs.readFileSync('test/data/text.txt')], { type: 'text/plain' })
     const response = await s3ClientService.upload(textFileId, blob, { expiresIn: 30 })
     expect(response.ok).toExist()
     expect(response.status).to.equal(200)
     expect(response.headers.raw().etag).toExist()
   })
   it('upload image file', async () => {
-    const blob = new Blob([ fs.readFileSync('test/data/image.png') ], { type: 'image/png'})
+    const blob = new Blob([fs.readFileSync('test/data/image.png')], { type: 'image/png' })
     const response = await s3ClientService.upload(imageFileId, blob, { expiresIn: 30 })
     expect(response.ok).toExist()
     expect(response.status).to.equal(200)
     expect(response.headers.raw().etag).toExist()
   })
   it('upload zip file', async () => {
-    const blob = new Blob([ fs.readFileSync('test/data/archive.zip') ], { type: 'application/zip'})
+    const blob = new Blob([fs.readFileSync('test/data/archive.zip')], { type: 'application/zip' })
     const response = await s3ClientService.upload(archiveFileId, blob, { expiresIn: 30 })
     expect(response.status).to.equal(200)
     expect(response.headers.raw().etag).toExist()
