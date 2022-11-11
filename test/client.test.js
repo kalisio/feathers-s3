@@ -62,14 +62,14 @@ describe('feathers-s3-client2', () => {
   })
   it('upload image file', async () => {
     const blob = new Blob([ fs.readFileSync('test/data/image.png') ], { type: 'image/png'})
-    const response = await s3ClientService.upload(imageFileId, blob, 'image/png', { expiresIn: 30 })
+    const response = await s3ClientService.upload(imageFileId, blob, { expiresIn: 30 })
     expect(response.ok).toExist()
     expect(response.status).to.equal(200)
     expect(response.headers.raw().etag).toExist()
   })
   it('upload zip file', async () => {
     const blob = new Blob([ fs.readFileSync('test/data/archive.zip') ], { type: 'application/zip'})
-    const response = await s3ClientService.upload(archiveFileId, blob, 'application/zip', { expiresIn: 30 })
+    const response = await s3ClientService.upload(archiveFileId, blob, { expiresIn: 30 })
     expect(response.status).to.equal(200)
     expect(response.headers.raw().etag).toExist()
   })
