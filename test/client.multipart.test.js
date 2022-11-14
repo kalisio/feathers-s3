@@ -27,6 +27,7 @@ const options = {
 }
 
 const featuresFileId = 'features.geojson'
+let transport
 
 describe('feathers-s3-client-multipart', () => {
   before(async () => {
@@ -36,7 +37,8 @@ describe('feathers-s3-client-multipart', () => {
     expressServer = await serverApp.listen(3000)
     clientApp = feathersClient()
     const socket = io('http://localhost:3000')
-    clientApp.configure(feathersClient.socketio(socket))
+    transport = feathersClient.socketio(socket)
+    clientApp.configure(transport)
   })
   it('is ES module compatible', () => {
     expect(typeof Service).to.equal('function')
@@ -44,23 +46,21 @@ describe('feathers-s3-client-multipart', () => {
   })
   it('create s3Service', () => {
     serverApp.use('s3', new Service(options), {
-      methods: ['create', 'get', 'remove', 'createMultipartUpload', 'completeMultipartUpload'] 
+      methods: ['create', 'get', 'remove', 'createMultipartUpload', 'completeMultipartUpload']
     })
     s3Service = serverApp.service('s3')
     expect(s3Service).toExist()
   })
   it('create s3ClientService', () => {
-    s3ClientService = getClientService(clientApp, { servicePath: 's3' })
+    s3ClientService = getClientService(clientApp, { servicePath: 's3', transport })
     expect(s3ClientService).toExist()
   })
-/*  it('upload features file', async () => {
+  it('upload features file', async () => {
     const blob = new Blob([fs.readFileSync('test/data/features.geojson')], { type: 'application/geo+json' })
     const response = await s3ClientService.upload(featuresFileId, blob, { expiresIn: 30 })
     expect(response.ok).toExist()
     expect(response.status).to.equal(200)
-    expect(response.headers.raw().etag).toExist()
   })
-  */
   after(async () => {
     await expressServer.close()
   })

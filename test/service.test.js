@@ -26,9 +26,9 @@ const options = {
 
 const fileId = 'features.geojson'
 const blob = new Blob([fs.readFileSync('test/data/features.geojson')], { type: 'application/geo+json' })
-const chunkSize = 1024*1024*5
+const chunkSize = 1024 * 1024 * 5
 let uploadId
-let parts = []
+const parts = []
 
 describe('feathers-s3-service', () => {
   before(() => {

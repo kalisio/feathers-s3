@@ -26,6 +26,8 @@ const options = {
   prefix: 'feathers-s3'
 }
 
+let transport
+
 const textFileId = 'text.txt'
 const imageFileId = 'image.png'
 const archiveFileId = 'arvhive.zip'
@@ -38,7 +40,8 @@ describe('feathers-s3-client-singlepart', () => {
     expressServer = await serverApp.listen(3000)
     clientApp = feathersClient()
     const socket = io('http://localhost:3000')
-    clientApp.configure(feathersClient.socketio(socket))
+    transport = feathersClient.socketio(socket)
+    clientApp.configure(transport)
   })
   it('is ES module compatible', () => {
     expect(typeof Service).to.equal('function')
@@ -50,7 +53,7 @@ describe('feathers-s3-client-singlepart', () => {
     expect(s3Service).toExist()
   })
   it('create s3ClientService', () => {
-    s3ClientService = getClientService(clientApp, { servicePath: 's3' })
+    s3ClientService = getClientService(clientApp, { servicePath: 's3', transport })
     expect(s3ClientService).toExist()
   })
   it('upload text file', async () => {
