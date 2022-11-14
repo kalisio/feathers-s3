@@ -31,7 +31,7 @@ let transport
 const textFileId = 'text.txt'
 const imageFileId = 'image.png'
 const archiveFileId = 'arvhive.zip'
-
+/*
 describe('feathers-s3-client-singlepart', () => {
   before(async () => {
     chailint(chai, util)
@@ -125,3 +125,4 @@ describe('feathers-s3-client-singlepart', () => {
     await expressServer.close()
   })
 })
+*/
