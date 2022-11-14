@@ -31,7 +31,7 @@
     "release:minor": "npm version minor && npm publish",
     "release:major": "npm version major && npm publish",
     "lint": "standard lib/**/*.js test/**/*.js --fix",
-    "mocha": "cross-env NODE_CONFIG_DIR=./test/config/ mocha --exit --timeout 30000",
+    "mocha": "cross-env NODE_CONFIG_DIR=./test/config/ mocha --exit --timeout 60000",
     "coverage": "c8 npm run mocha",
     "test": "npm run lint && npm run coverage"
   },
@@ -50,16 +50,16 @@
     "lib": "lib"
   },
   "dependencies": {
-    "@aws-sdk/client-s3": "^3.183.0",
-    "@aws-sdk/s3-request-presigner": "^3.183.0",
+    "@aws-sdk/client-s3": "^3.209.0",
+    "@aws-sdk/s3-request-presigner": "^3.209.0",
     "@feathersjs/commons": "^5.0.0-pre.28",
     "@feathersjs/errors": "^5.0.0-pre.28",
     "lodash": "^4.17.21"
   },
-  "devDependencies": {    
+  "devDependencies": {
     "@feathersjs/client": "^5.0.0-pre.28",
     "@feathersjs/configuration": "^5.0.0-pre.28",
-    "@feathersjs/express": "^5.0.0-pre.28",   
+    "@feathersjs/express": "^5.0.0-pre.28",
     "@feathersjs/feathers": "^5.0.0-pre.28",
     "@feathersjs/socketio": "^5.0.0-pre.28",
     "c8": "^7.11.0",
