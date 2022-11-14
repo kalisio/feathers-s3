@@ -30,7 +30,6 @@ const chunkSize = 1024 * 1024 * 5
 let uploadId
 const parts = []
 
-/*
 describe('feathers-s3-service', () => {
   before(() => {
     chailint(chai, util)
@@ -107,4 +106,3 @@ describe('feathers-s3-service', () => {
     expect(response.status).to.equal(200)
   })
 })
-*/
