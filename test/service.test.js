@@ -51,33 +51,29 @@ describe('feathers-s3-service', () => {
     expect(response.uploadId).toExist()
     uploadId = response.uploadId
   })
-  it('uploadPart1', async () => {
-    const { signedUrl } = await service.create({ id: fileId, partNumber: 1, uploadId }, { expiresIn: 30 })
-    const response = await fetch(signedUrl, {
-      method: 'PUT',
-      body: blob.slice(0, chunkSize),
-      headers: {
-        'Content-Type': blob.type
-      }
-    })
+  it('uploadPart 1', async () => {
+    const response = await service.uploadPart({ 
+      id: fileId, 
+      command: 'UploadPart',
+      buffer: await blob.slice(0, chunkSize).arrayBuffer(),
+      partNumber: 1, 
+      uploadId,
+     }, { expiresIn: 30  })
     expect(response.ok).toExist()
-    expect(response.headers.raw().etag).toExist()
-    const etag = response.headers.raw().etag[0]
-    parts.push({ PartNumber: 1, ETag: etag })
+    expect(response.ETag).toExist()
+    parts.push({ PartNumber: 1, ETag: response.ETag })
   })
-  it('uploadPart2', async () => {
-    const { signedUrl } = await service.create({ id: fileId, partNumber: 2, uploadId }, { expiresIn: 30 })
-    const response = await fetch(signedUrl, {
-      method: 'PUT',
-      body: blob.slice(chunkSize, blob.size),
-      headers: {
-        'Content-Type': blob.type
-      }
-    })
+  it('uploadPart 2', async () => {
+    const response = await service.uploadPart({ 
+      id: fileId, 
+      command: 'UploadPart', 
+      buffer: await blob.slice(chunkSize, blob.size).arrayBuffer(),
+      partNumber: 2, 
+      uploadId 
+    }, { expiresIn: 30  })
     expect(response.ok).toExist()
-    expect(response.headers.raw().etag).toExist()
-    const etag = response.headers.raw().etag[0]
-    parts.push({ PartNumber: 2, ETag: etag })
+    expect(response.ETag).toExist()
+    parts.push({ PartNumber: 2, ETag: response.ETag })
   })
   it('completeMultipartUpload', async () => {
     const response = await service.completeMultipartUpload({
@@ -88,15 +84,12 @@ describe('feathers-s3-service', () => {
     expect(response.ok).toExist()
     expect(response.status).to.equal(200)
   })
-  it('get uploaded file', async () => {
-    let response = await service.get(fileId, { expisresIn: 30 })
+  it('Download file', async () => {
+    let response = await service.getObject({ id: fileId, type: 'application/geo+json' }, { expisresIn: 30 })
     expect(response.ok).toExist()
     expect(response.status).to.equal(200)
-    expect(response.signedUrl).toExist()
-    response = await fetch(response.signedUrl, { method: 'GET' })
     const downloadedFile = 'test/data/dl-featues.geojson'
-    const arrayBuffer = await response.arrayBuffer()
-    fs.writeFileSync(downloadedFile, Buffer.from(arrayBuffer))
+    fs.writeFileSync(downloadedFile, response.buffer)
     expect(fs.existsSync(downloadedFile)).beTrue()
     fs.unlinkSync(downloadedFile)
   })

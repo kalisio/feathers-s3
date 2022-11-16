@@ -26,8 +26,9 @@ const options = {
   prefix: 'feathers-s3'
 }
 
-const featuresFileId = 'features.geojson'
 let transport
+
+const featuresFileId = 'features.geojson'
 
 describe('feathers-s3-client-multipart', () => {
   before(async () => {
@@ -46,13 +47,13 @@ describe('feathers-s3-client-multipart', () => {
   })
   it('create s3Service', () => {
     serverApp.use('s3', new Service(options), {
-      methods: ['create', 'get', 'remove', 'createMultipartUpload', 'completeMultipartUpload']
+      methods: ['create', 'get', 'remove', 'createMultipartUpload', 'completeMultipartUpload', 'uploadPart', 'putObject']
     })
     s3Service = serverApp.service('s3')
     expect(s3Service).toExist()
   })
   it('create s3ClientService', () => {
-    s3ClientService = getClientService(clientApp, { servicePath: 's3', transport })
+    s3ClientService = getClientService(clientApp, { servicePath: 's3', transport, useProxy: true })
     expect(s3ClientService).toExist()
   })
   it('upload features file', async () => {

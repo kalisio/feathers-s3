@@ -30,7 +30,7 @@ let transport
 
 const textFileId = 'text.txt'
 const imageFileId = 'image.png'
-const archiveFileId = 'arvhive.zip'
+const archiveFileId = 'archive.zip'
 
 describe('feathers-s3-client-singlepart', () => {
   before(async () => {
@@ -48,61 +48,72 @@ describe('feathers-s3-client-singlepart', () => {
     expect(typeof getClientService).to.equal('function')
   })
   it('create s3Service', () => {
-    serverApp.use('s3', new Service(options))
+    serverApp.use('s3', new Service(options), {
+      methods: ['create', 'get', 'remove', 'createMultipartUpload', 'completeMultipartUpload', 'uploadPart', 'putObject']
+    })
     s3Service = serverApp.service('s3')
     expect(s3Service).toExist()
   })
   it('create s3ClientService', () => {
-    s3ClientService = getClientService(clientApp, { servicePath: 's3', transport })
+    s3ClientService = getClientService(clientApp, { servicePath: 's3', transport, useProxy: true })   
     expect(s3ClientService).toExist()
+    expect(s3ClientService.createMultipartUpload).toExist()
+    expect(s3ClientService.completeMultipartUpload).toExist()
+    expect(s3ClientService.uploadPart).toExist()
+    expect(s3ClientService.putObject).toExist()
+    expect(s3ClientService.upload).toExist()
+    expect(s3ClientService.download).toExist()
   })
   it('upload text file', async () => {
     const blob = new Blob([fs.readFileSync('test/data/text.txt')], { type: 'text/plain' })
     const response = await s3ClientService.upload(textFileId, blob, { expiresIn: 30 })
     expect(response.ok).toExist()
     expect(response.status).to.equal(200)
-    expect(response.headers.raw().etag).toExist()
+    expect(response.ETag).toExist()
   })
   it('upload image file', async () => {
     const blob = new Blob([fs.readFileSync('test/data/image.png')], { type: 'image/png' })
     const response = await s3ClientService.upload(imageFileId, blob, { expiresIn: 30 })
     expect(response.ok).toExist()
     expect(response.status).to.equal(200)
-    expect(response.headers.raw().etag).toExist()
+    expect(response.ETag).toExist()
   })
   it('upload zip file', async () => {
     const blob = new Blob([fs.readFileSync('test/data/archive.zip')], { type: 'application/zip' })
     const response = await s3ClientService.upload(archiveFileId, blob, { expiresIn: 30 })
     expect(response.status).to.equal(200)
-    expect(response.headers.raw().etag).toExist()
+    expect(response.ETag).toExist()
   })
   it('download text file', async () => {
     const filePath = 'test/data/downloaded-text.txt'
-    const response = await s3ClientService.download(textFileId, 'text/plain', { expiresIn: 30 })
+    const response = await s3ClientService.download(textFileId, { expiresIn: 30 })
     expect(response.ok).toExist()
     expect(response.status).to.equal(200)
-    const arrayBuffer = await response.arrayBuffer()
-    fs.writeFileSync(filePath, Buffer.from(arrayBuffer))
+    expect(response.type).to.equal('text/plain')
+    expect(response.buffer).toExist()
+    fs.writeFileSync(filePath, Buffer.from(response.buffer))
     expect(fs.existsSync(filePath)).beTrue()
     fs.unlinkSync(filePath)
   })
   it('download image file', async () => {
     const filePath = 'test/data/downloaded-image.png'
-    const response = await s3ClientService.download(imageFileId, 'image/png', { expiresIn: 30 })
+    const response = await s3ClientService.download(imageFileId, { expiresIn: 30 })
     expect(response.ok).toExist()
     expect(response.status).to.equal(200)
-    const arrayBuffer = await response.arrayBuffer()
-    fs.writeFileSync(filePath, Buffer.from(arrayBuffer))
+    expect(response.type).to.equal('image/png')
+    expect(response.buffer).toExist()
+    fs.writeFileSync(filePath, Buffer.from(response.buffer))
     expect(fs.existsSync(filePath)).beTrue()
     fs.unlinkSync(filePath)
   })
   it('download zip file', async () => {
     const filePath = 'test/data/downloaded-archive.zip'
-    const response = await s3ClientService.download(archiveFileId, 'application/zip', { expiresIn: 30 })
+    const response = await s3ClientService.download(archiveFileId, { expiresIn: 30 })
     expect(response.ok).toExist()
     expect(response.status).to.equal(200)
-    const arrayBuffer = await response.arrayBuffer()
-    fs.writeFileSync(filePath, Buffer.from(arrayBuffer))
+    expect(response.type).to.equal('application/zip')
+    expect(response.buffer).toExist()
+    fs.writeFileSync(filePath, Buffer.from(response.buffer))
     expect(fs.existsSync(filePath)).beTrue()
     fs.unlinkSync(filePath)
   })
