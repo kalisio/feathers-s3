@@ -40,6 +40,10 @@ const imageFileId = 'image.png'
 const archiveFileId = 'archive.zip'
 const featuresFileId = 'features.geojson'
 
+function btoa(data) {
+  return new Buffer(data).toString('base64')
+}
+
 describe('feathers-s3-client-noproxy', () => {
   before(async () => {
     chailint(chai, util)
@@ -68,7 +72,7 @@ describe('feathers-s3-client-noproxy', () => {
     expect(s3Service).toExist()
   })
   it('create s3ClientService', () => {
-    s3ClientService = getClientService(clientApp, { servicePath: 's3', transport, useProxy: false })
+    s3ClientService = getClientService(clientApp, { servicePath: 's3', transport, useProxy: false, btoa })
     expect(s3ClientService).toExist()
     expect(s3ClientService.createMultipartUpload).toExist()
     expect(s3ClientService.completeMultipartUpload).toExist()
