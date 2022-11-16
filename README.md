@@ -38,7 +38,7 @@ Generate a presigned URL for the following commands:
 * [GetObjectCommand](https://docs.aws.amazon.com/AWSJavaScriptSDK/v3/latest/clients/client-s3/classes/getobjectcommand.html)
 * [UploadPartCommnad](https://docs.aws.amazon.com/AWSJavaScriptSDK/v3/latest/clients/client-s3/classes/uploadpartcommand.html)
 
-The payload `data` must/should contain the following properties:
+The payload `data` must contain the following properties:
 
 | Property | Description | Required |
 |---|---|---|
@@ -52,7 +52,7 @@ The payload `data` must/should contain the following properties:
 Get an object from a bucket.
 
 | Parameter | Description |
-|---|---|---|
+|---|---|
 | `id` |  the object key. Note that the final computed **Key** takes into account the `prefix` option of the service. |
 
 #### remove (id, params)
@@ -60,7 +60,7 @@ Get an object from a bucket.
 Remove an object fromt the bucket.
 
 | Parameter | Description |
-|---|---|---|
+|---|---|
 | `id` |  the object key. Note that the final computed **Key** takes into account the `prefix` option of the service. |
 
 #### createMultipartUpload (data, params)
@@ -69,7 +69,7 @@ Initiate a multipart upload.
 
 It wraps the [CreateMultipartUploadCommand](https://docs.aws.amazon.com/AWSJavaScriptSDK/v3/latest/clients/client-s3/interfaces/createmultipartuploadcommandoutput.html).
 
-The payload `data` must/should contain the following properties:
+The payload `data` must contain the following properties:
 
 | Property | Description | Required |
 |---|---|---|
@@ -83,7 +83,7 @@ Finalize a multipart upload.
 
 It wraps the [CompleteMultipartUploadCommand](https://docs.aws.amazon.com/AWSJavaScriptSDK/v3/latest/clients/client-s3/classes/completemultipartuploadcommand.html).
 
-The payload `data` must/should contain the following properties:
+The payload `data` must contain the following properties:
 
 | Property | Description | Required |
 |---|---|---|
@@ -97,11 +97,11 @@ Any optional properties are forwarded to the underlying `CompleteMultipartUpload
 
 Upload a part to a bucket.
 
-The payload `data` must/should contain the following properties:
+The payload `data` must contain the following properties:
 
 | Property | Description | Required |
 |---|---|---|
-[ `command` | the command to define whether to upload a complete object, `PutObject` or a part, `UploadPart`. | yes | 
+| `command` | the command to define whether to upload a complete object, `PutObject` or a part, `UploadPart`. | yes | 
 | `id` |  the object key. Note that the final computed **Key** takes into account the `prefix` option of the service. | yes |
 | `uplaodId` | the **UploadId** generated when creating 
 | `buffer` | the content of the object to be uploaded. | yes |
@@ -110,11 +110,11 @@ The payload `data` must/should contain the following properties:
 
 Upload an object to a bucket.
 
-The payload `data` must/should contain the following properties:
+The payload `data` must contain the following properties:
 
 | Property | Description | Required |
 |---|---|---|
-[ `command` | the command to define whether to upload a complete object, `PutObject` or a part, `UploadPart`. | yes | 
+| `command` | the command to define whether to upload a complete object, `PutObject` or a part, `UploadPart`. | yes | 
 | `id` |  the object key. Note that the final computed **Key** takes into account the `prefix` option of the service. | yes |
 | `buffer` | the content of the object to be uploaded. | yes |
 

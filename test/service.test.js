@@ -1,12 +1,14 @@
 
+import makeDebug from 'debug'
 import chai, { util, expect } from 'chai'
 import chailint from 'chai-lint'
 import feathers from '@feathersjs/feathers'
 import configuration from '@feathersjs/configuration'
 import fs from 'fs'
 import { Blob } from 'buffer'
-import fetch from 'node-fetch'
 import { Service } from '../lib/index.js'
+
+feathers.setDebug(makeDebug)
 
 let app, service
 
@@ -52,25 +54,25 @@ describe('feathers-s3-service', () => {
     uploadId = response.uploadId
   })
   it('uploadPart 1', async () => {
-    const response = await service.uploadPart({ 
-      id: fileId, 
+    const response = await service.uploadPart({
+      id: fileId,
       command: 'UploadPart',
       buffer: await blob.slice(0, chunkSize).arrayBuffer(),
-      partNumber: 1, 
-      uploadId,
-     }, { expiresIn: 30  })
+      partNumber: 1,
+      uploadId
+    }, { expiresIn: 30 })
     expect(response.ok).toExist()
     expect(response.ETag).toExist()
     parts.push({ PartNumber: 1, ETag: response.ETag })
   })
   it('uploadPart 2', async () => {
-    const response = await service.uploadPart({ 
-      id: fileId, 
-      command: 'UploadPart', 
+    const response = await service.uploadPart({
+      id: fileId,
+      command: 'UploadPart',
       buffer: await blob.slice(chunkSize, blob.size).arrayBuffer(),
-      partNumber: 2, 
-      uploadId 
-    }, { expiresIn: 30  })
+      partNumber: 2,
+      uploadId
+    }, { expiresIn: 30 })
     expect(response.ok).toExist()
     expect(response.ETag).toExist()
     parts.push({ PartNumber: 2, ETag: response.ETag })
@@ -85,7 +87,7 @@ describe('feathers-s3-service', () => {
     expect(response.status).to.equal(200)
   })
   it('Download file', async () => {
-    let response = await service.getObject({ id: fileId, type: 'application/geo+json' }, { expisresIn: 30 })
+    const response = await service.getObject({ id: fileId, type: 'application/geo+json' }, { expisresIn: 30 })
     expect(response.ok).toExist()
     expect(response.status).to.equal(200)
     const downloadedFile = 'test/data/dl-featues.geojson'

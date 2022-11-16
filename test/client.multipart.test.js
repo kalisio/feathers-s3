@@ -1,4 +1,5 @@
 
+import makeDebug from 'debug'
 import chai, { util, expect } from 'chai'
 import chailint from 'chai-lint'
 import feathers from '@feathersjs/feathers'
@@ -9,6 +10,9 @@ import io from 'socket.io-client'
 import { Service, getClientService } from '../lib/index.js'
 import fs from 'fs'
 import { Blob } from 'buffer'
+
+feathers.setDebug(makeDebug)
+feathersClient.setDebug(makeDebug)
 
 let serverApp, expressServer, clientApp, s3Service, s3ClientService
 
