@@ -47,7 +47,7 @@ describe('feathers-s3-service', () => {
     expect(service).toExist()
   })
   it('createMultipartUpload', async () => {
-    const response = await service.createMultipartUpload({ id: fileId })
+    const response = await service.createMultipartUpload({ id: fileId, type: blob.type  })
     expect(response.ok).toExist()
     expect(response.status).to.equal(200)
     expect(response.uploadId).toExist()
@@ -57,8 +57,8 @@ describe('feathers-s3-service', () => {
     const response = await service.uploadPart({
       id: fileId,
       command: 'UploadPart',
-      buffer: await blob.slice(0, chunkSize).arrayBuffer(),
-      type: 'application/geo+json',
+      buffer: new Uint8Array(await blob.slice(0, chunkSize).arrayBuffer()),
+      type: blob.type,
       partNumber: 1,
       uploadId
     }, { expiresIn: 30 })
@@ -70,8 +70,8 @@ describe('feathers-s3-service', () => {
     const response = await service.uploadPart({
       id: fileId,
       command: 'UploadPart',
-      buffer: await blob.slice(chunkSize, blob.size).arrayBuffer(),
-      type: 'application/geo+json',
+      buffer: new Uint8Array(await blob.slice(chunkSize, blob.size).arrayBuffer()),
+      type: blob.type,
       partNumber: 2,
       uploadId
     }, { expiresIn: 30 })
@@ -92,14 +92,11 @@ describe('feathers-s3-service', () => {
     const response = await service.get(fileId)
     expect(response.ok).toExist()
     expect(response.status).to.equal(200)
-    const downloadedFile = 'test/data/dl-featues.geojson'
-    fs.writeFileSync(downloadedFile, response.buffer)
-    expect(fs.existsSync(downloadedFile)).beTrue()
-    fs.unlinkSync(downloadedFile)
+    expect(response.type).to.equal('application/geo+json')
   })
-  it('remove uploaded file', async () => {
+ /* it('remove uploaded file', async () => {
     const response = await service.remove(fileId)
     expect(response.ok).toExist()
     expect(response.status).to.equal(200)
-  })
+  })*/
 })
