@@ -2,6 +2,7 @@
 import makeDebug from 'debug'
 import chai, { util, expect } from 'chai'
 import chailint from 'chai-lint'
+import superagent from 'superagent'
 import feathers from '@feathersjs/feathers'
 import express from '@feathersjs/express'
 import feathersClient from '@feathersjs/client'
@@ -10,6 +11,8 @@ import io from 'socket.io-client'
 import { Service, getClientService } from '../lib/index.js'
 import fs from 'fs'
 import { Blob } from 'buffer'
+
+const { rest } = express
 
 feathers.setDebug(makeDebug)
 feathersClient.setDebug(makeDebug)
@@ -41,11 +44,16 @@ describe('feathers-s3-client-noproxy', () => {
   before(async () => {
     chailint(chai, util)
     serverApp = express(feathers())
+    serverApp.use(express.json({ limit: 100 * 1024 * 1024 }))
+    serverApp.use(express.urlencoded({ extended: true }))
+    serverApp.configure(rest())
     serverApp.configure(feathersSocketio())
-    expressServer = await serverApp.listen(3000)
+    expressServer = await serverApp.listen(3333)
     clientApp = feathersClient()
-    const socket = io('http://localhost:3000')
+    const socket = io('http://localhost:3333')
     transport = feathersClient.socketio(socket)
+    // Uncomment to test REST client
+    //transport = feathersClient.rest('http://localhost:3333').superagent(superagent)
     clientApp.configure(transport)
   })
   it('is ES module compatible', () => {
