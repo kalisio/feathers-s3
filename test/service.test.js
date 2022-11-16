@@ -58,6 +58,7 @@ describe('feathers-s3-service', () => {
       id: fileId,
       command: 'UploadPart',
       buffer: await blob.slice(0, chunkSize).arrayBuffer(),
+      type: 'application/geo+json',
       partNumber: 1,
       uploadId
     }, { expiresIn: 30 })
@@ -70,6 +71,7 @@ describe('feathers-s3-service', () => {
       id: fileId,
       command: 'UploadPart',
       buffer: await blob.slice(chunkSize, blob.size).arrayBuffer(),
+      type: 'application/geo+json',
       partNumber: 2,
       uploadId
     }, { expiresIn: 30 })
@@ -87,7 +89,7 @@ describe('feathers-s3-service', () => {
     expect(response.status).to.equal(200)
   })
   it('Download file', async () => {
-    const response = await service.getObject({ id: fileId, type: 'application/geo+json' }, { expisresIn: 30 })
+    const response = await service.get(fileId, { expisresIn: 30 })
     expect(response.ok).toExist()
     expect(response.status).to.equal(200)
     const downloadedFile = 'test/data/dl-featues.geojson'

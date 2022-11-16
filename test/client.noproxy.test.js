@@ -35,8 +35,9 @@ let transport
 const textFileId = 'text.txt'
 const imageFileId = 'image.png'
 const archiveFileId = 'archive.zip'
+const featuresFileId = 'features.geojson'
 
-describe('feathers-s3-client-singlepart', () => {
+describe('feathers-s3-client-noproxy', () => {
   before(async () => {
     chailint(chai, util)
     serverApp = express(feathers())
@@ -59,7 +60,7 @@ describe('feathers-s3-client-singlepart', () => {
     expect(s3Service).toExist()
   })
   it('create s3ClientService', () => {
-    s3ClientService = getClientService(clientApp, { servicePath: 's3', transport, useProxy: true })
+    s3ClientService = getClientService(clientApp, { servicePath: 's3', transport, useProxy: false })
     expect(s3ClientService).toExist()
     expect(s3ClientService.createMultipartUpload).toExist()
     expect(s3ClientService.completeMultipartUpload).toExist()
@@ -85,8 +86,15 @@ describe('feathers-s3-client-singlepart', () => {
   it('upload zip file', async () => {
     const blob = new Blob([fs.readFileSync('test/data/archive.zip')], { type: 'application/zip' })
     const response = await s3ClientService.upload(archiveFileId, blob, { expiresIn: 30 })
+    expect(response.ok).toExist()    
     expect(response.status).to.equal(200)
     expect(response.ETag).toExist()
+  })
+  it('upload features file', async () => {
+    const blob = new Blob([fs.readFileSync('test/data/features.geojson')], { type: 'application/geo+json' })
+    const response = await s3ClientService.upload(featuresFileId, blob, { expiresIn: 30 })
+    expect(response.ok).toExist()
+    expect(response.status).to.equal(200)
   })
   it('download text file', async () => {
     const filePath = 'test/data/downloaded-text.txt'
@@ -116,6 +124,17 @@ describe('feathers-s3-client-singlepart', () => {
     expect(response.ok).toExist()
     expect(response.status).to.equal(200)
     expect(response.type).to.equal('application/zip')
+    expect(response.buffer).toExist()
+    fs.writeFileSync(filePath, Buffer.from(response.buffer))
+    expect(fs.existsSync(filePath)).beTrue()
+    fs.unlinkSync(filePath)
+  })
+  it('download features file', async () => {
+    const filePath = 'test/data/downloaded-features.geojson'
+    const response = await s3ClientService.download(featuresFileId, { expiresIn: 30 })
+    expect(response.ok).toExist()
+    expect(response.status).to.equal(200)
+    expect(response.type).to.equal('application/geo+json')
     expect(response.buffer).toExist()
     fs.writeFileSync(filePath, Buffer.from(response.buffer))
     expect(fs.existsSync(filePath)).beTrue()
