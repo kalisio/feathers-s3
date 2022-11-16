@@ -56,7 +56,6 @@ describe('feathers-s3-service', () => {
   it('uploadPart 1', async () => {
     const response = await service.uploadPart({
       id: fileId,
-      command: 'UploadPart',
       buffer: new Uint8Array(await blob.slice(0, chunkSize).arrayBuffer()),
       type: blob.type,
       partNumber: 1,
@@ -69,7 +68,6 @@ describe('feathers-s3-service', () => {
   it('uploadPart 2', async () => {
     const response = await service.uploadPart({
       id: fileId,
-      command: 'UploadPart',
       buffer: new Uint8Array(await blob.slice(chunkSize, blob.size).arrayBuffer()),
       type: blob.type,
       partNumber: 2,
