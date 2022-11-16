@@ -94,9 +94,9 @@ describe('feathers-s3-service', () => {
     expect(response.status).to.equal(200)
     expect(response.type).to.equal('application/geo+json')
   })
- /* it('remove uploaded file', async () => {
+  it('remove uploaded file', async () => {
     const response = await service.remove(fileId)
     expect(response.ok).toExist()
     expect(response.status).to.equal(200)
-  })*/
+  })
 })
