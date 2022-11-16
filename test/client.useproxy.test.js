@@ -86,7 +86,7 @@ describe('feathers-s3-client-useproxy', () => {
   it('upload zip file', async () => {
     const blob = new Blob([fs.readFileSync('test/data/archive.zip')], { type: 'application/zip' })
     const response = await s3ClientService.upload(archiveFileId, blob, { expiresIn: 30 })
-    expect(response.ok).toExist()    
+    expect(response.ok).toExist()
     expect(response.status).to.equal(200)
     expect(response.ETag).toExist()
   })
@@ -141,17 +141,17 @@ describe('feathers-s3-client-useproxy', () => {
     fs.unlinkSync(filePath)
   })
   it('delete text file', async () => {
-    const response = await s3ClientService.remove(textFileId, { expiresIn: 30 })
+    const response = await s3ClientService.remove(textFileId)
     expect(response.ok).toExist()
     expect(response.status).to.equal(200)
   })
   it('delete image file', async () => {
-    const response = await s3ClientService.remove(imageFileId, { expiresIn: 30 })
+    const response = await s3ClientService.remove(imageFileId)
     expect(response.ok).toExist()
     expect(response.status).to.equal(200)
   })
   it('delete archive file', async () => {
-    const response = await s3ClientService.remove(archiveFileId, { expiresIn: 30 })
+    const response = await s3ClientService.remove(archiveFileId)
     expect(response.ok).toExist()
     expect(response.status).to.equal(200)
   })

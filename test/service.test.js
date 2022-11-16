@@ -89,7 +89,7 @@ describe('feathers-s3-service', () => {
     expect(response.status).to.equal(200)
   })
   it('Download file', async () => {
-    const response = await service.get(fileId, { expisresIn: 30 })
+    const response = await service.get(fileId)
     expect(response.ok).toExist()
     expect(response.status).to.equal(200)
     const downloadedFile = 'test/data/dl-featues.geojson'
