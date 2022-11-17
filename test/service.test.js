@@ -1,16 +1,16 @@
-
 import makeDebug from 'debug'
+import feathers from '@feathersjs/feathers'
 import chai, { util, expect } from 'chai'
 import chailint from 'chai-lint'
-import feathers from '@feathersjs/feathers'
-import configuration from '@feathersjs/configuration'
+import superagent from 'superagent'
+import express from '@feathersjs/express'
 import fs from 'fs'
 import { Blob } from 'buffer'
-import { Service } from '../lib/index.js'
+import { Service, getObject } from '../lib/index.js'
 
 feathers.setDebug(makeDebug)
 
-let app, service
+let app, service, expressServer
 
 const options = {
   s3Client: {
@@ -27,7 +27,8 @@ const options = {
 }
 
 const fileId = 'features.geojson'
-const blob = new Blob([fs.readFileSync('test/data/features.geojson')], { type: 'application/geo+json' })
+const fileContent = fs.readFileSync('test/data/features.geojson')
+const blob = new Blob([fileContent], { type: 'application/geo+json' })
 const chunkSize = 1024 * 1024 * 5
 let uploadId
 const parts = []
@@ -35,16 +36,19 @@ const parts = []
 describe('feathers-s3-service', () => {
   before(() => {
     chailint(chai, util)
-    app = feathers()
-    app.configure(configuration())
+    app = express(feathers())
+    app.use(express.json())
+    app.configure(express.rest())
   })
   it('is ES module compatible', () => {
     expect(typeof Service).to.equal('function')
   })
-  it('create the service', () => {
+  it('create the service', async () => {
     app.use('s3', new Service(options))
     service = app.service('s3')
     expect(service).toExist()
+    app.get('/s3-objects/*', getObject(service))
+    expressServer = await app.listen(3333)
   })
   it('createMultipartUpload', async () => {
     const response = await service.createMultipartUpload({ id: fileId, type: blob.type })
@@ -86,15 +90,26 @@ describe('feathers-s3-service', () => {
     expect(response.ok).toExist()
     expect(response.status).to.equal(200)
   })
-  it('Download file', async () => {
+  it('download file with middleware', async () => {
+    const response = await superagent
+      .get(`http://localhost:3333/s3-objects/${fileId}`)
+    expect(response.text).to.equal(fileContent.toString())
+  })
+  it('download file with service operation', async () => {
     const response = await service.get(fileId)
     expect(response.ok).toExist()
+    expect(response.buffer).toExist()
     expect(response.status).to.equal(200)
     expect(response.type).to.equal('application/geo+json')
+    const buffer = service.atob(response.buffer)
+    expect(buffer.toString()).to.equal(fileContent.toString())
   })
   it('remove uploaded file', async () => {
     const response = await service.remove(fileId)
     expect(response.ok).toExist()
     expect(response.status).to.equal(200)
+  })
+  after(async () => {
+    await expressServer.close()
   })
 })

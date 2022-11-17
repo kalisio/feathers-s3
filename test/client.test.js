@@ -1,4 +1,3 @@
-
 import makeDebug from 'debug'
 import chai, { util, expect } from 'chai'
 import chailint from 'chai-lint'
@@ -38,6 +37,14 @@ const imageFileId = 'image.png'
 const archiveFileId = 'archive.zip'
 const featuresFileId = 'features.geojson'
 
+const textFileContent = fs.readFileSync('test/data/text.txt')
+const imageFileContent = fs.readFileSync('test/data/image.png')
+const archiveFileContent = fs.readFileSync('test/data/archive.zip')
+const featuresFileContent = fs.readFileSync('test/data/features.geojson')
+
+function atob (data) {
+  return Buffer.from(data, 'base64')
+}
 function btoa (data) {
   return Buffer.from(data).toString('base64')
 }
@@ -46,7 +53,7 @@ let useProxy = false
 
 function runTests (message) {
   it('create s3 service' + message, () => {
-    s3ClientService = getClientService(clientApp, { servicePath: 's3', transport, useProxy, btoa })
+    s3ClientService = getClientService(clientApp, { servicePath: 's3', transport, useProxy, atob, btoa })
     // Change proxy mode for next tests
     useProxy = !useProxy
     expect(s3ClientService).toExist()
@@ -58,28 +65,28 @@ function runTests (message) {
     expect(s3ClientService.download).toExist()
   })
   it('upload text file' + message, async () => {
-    const blob = new Blob([fs.readFileSync('test/data/text.txt')], { type: 'text/plain' })
+    const blob = new Blob([textFileContent], { type: 'text/plain' })
     const response = await s3ClientService.upload(textFileId, blob, { expiresIn: 30 })
     expect(response.ok).toExist()
     expect(response.status).to.equal(200)
     expect(response.ETag).toExist()
   })
   it('upload image file' + message, async () => {
-    const blob = new Blob([fs.readFileSync('test/data/image.png')], { type: 'image/png' })
+    const blob = new Blob([imageFileContent], { type: 'image/png' })
     const response = await s3ClientService.upload(imageFileId, blob, { expiresIn: 30 })
     expect(response.ok).toExist()
     expect(response.status).to.equal(200)
     expect(response.ETag).toExist()
   })
   it('upload zip file' + message, async () => {
-    const blob = new Blob([fs.readFileSync('test/data/archive.zip')], { type: 'application/zip' })
+    const blob = new Blob([archiveFileContent], { type: 'application/zip' })
     const response = await s3ClientService.upload(archiveFileId, blob, { expiresIn: 30 })
     expect(response.ok).toExist()
     expect(response.status).to.equal(200)
     expect(response.ETag).toExist()
   })
   it('upload features file' + message, async () => {
-    const blob = new Blob([fs.readFileSync('test/data/features.geojson')], { type: 'application/geo+json' })
+    const blob = new Blob([featuresFileContent], { type: 'application/geo+json' })
     const response = await s3ClientService.upload(featuresFileId, blob, { expiresIn: 30 })
     expect(response.ok).toExist()
     expect(response.status).to.equal(200)
@@ -91,9 +98,7 @@ function runTests (message) {
     expect(response.status).to.equal(200)
     expect(response.type).to.equal('text/plain')
     expect(response.buffer).toExist()
-    fs.writeFileSync(filePath, Buffer.from(response.buffer))
-    expect(fs.existsSync(filePath)).beTrue()
-    fs.unlinkSync(filePath)
+    expect(atob(response.buffer).toString()).to.equal(textFileContent.toString())
   })
   it('download image file' + message, async () => {
     const filePath = 'test/data/downloaded-image.png'
@@ -102,9 +107,7 @@ function runTests (message) {
     expect(response.status).to.equal(200)
     expect(response.type).to.equal('image/png')
     expect(response.buffer).toExist()
-    fs.writeFileSync(filePath, Buffer.from(response.buffer))
-    expect(fs.existsSync(filePath)).beTrue()
-    fs.unlinkSync(filePath)
+    expect(atob(response.buffer).toString()).to.equal(imageFileContent.toString())
   })
   it('download zip file' + message, async () => {
     const filePath = 'test/data/downloaded-archive.zip'
@@ -113,9 +116,7 @@ function runTests (message) {
     expect(response.status).to.equal(200)
     expect(response.type).to.equal('application/zip')
     expect(response.buffer).toExist()
-    fs.writeFileSync(filePath, Buffer.from(response.buffer))
-    expect(fs.existsSync(filePath)).beTrue()
-    fs.unlinkSync(filePath)
+    expect(atob(response.buffer).toString()).to.equal(archiveFileContent.toString())
   })
   it('download features file' + message, async () => {
     const filePath = 'test/data/downloaded-features.geojson'
@@ -124,9 +125,7 @@ function runTests (message) {
     expect(response.status).to.equal(200)
     expect(response.type).to.equal('application/geo+json')
     expect(response.buffer).toExist()
-    fs.writeFileSync(filePath, Buffer.from(response.buffer))
-    expect(fs.existsSync(filePath)).beTrue()
-    fs.unlinkSync(filePath)
+    expect(atob(response.buffer).toString()).to.equal(featuresFileContent.toString())
   })
   it('delete text file' + message, async () => {
     const response = await s3ClientService.remove(textFileId)

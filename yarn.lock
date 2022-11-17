@@ -1055,17 +1055,6 @@
   resolved "https://registry.yarnpkg.com/@feathersjs/commons/-/commons-5.0.0-pre.33.tgz#2d8fc9714425810460e3794633dff2a5b746d750"
   integrity sha512-F0T94zN7/hWVejGOYrXd0WCNrudeA1saGhRxmTFJVXRyclRMjM+5lohxeX14h3IxF+eYnrTa5V8I5/UHWcwtLA==
 
-"@feathersjs/configuration@^5.0.0-pre.28":
-  version "5.0.0-pre.33"
-  resolved "https://registry.yarnpkg.com/@feathersjs/configuration/-/configuration-5.0.0-pre.33.tgz#e011904c86412a01a4bae2467a655f79efa5f1a9"
-  integrity sha512-D5sBpqvj9a9Jpw/N073fBWe59eeHEEwS3gnqQN6JF7iYoHWNhBNTXwhvtPTFKAoPT1WOI55scJn9JoESGVTdJQ==
-  dependencies:
-    "@feathersjs/commons" "^5.0.0-pre.33"
-    "@feathersjs/feathers" "^5.0.0-pre.33"
-    "@feathersjs/schema" "^5.0.0-pre.33"
-    "@types/config" "^3.3.0"
-    config "^3.3.8"
-
 "@feathersjs/errors@^5.0.0-pre.28":
   version "5.0.0-pre.32"
   resolved "https://registry.yarnpkg.com/@feathersjs/errors/-/errors-5.0.0-pre.32.tgz#8c3612141618ee010646bd83b9009f96e4204316"
@@ -1242,11 +1231,6 @@
   integrity sha512-lwEL4M/uAGWngWFLSG87ZDr2kLrbuR8p7X+QZB1OQlT+qkHsCPDVFnHPyXf4Vyl4yDDorNY+mAhosxkCvppatg==
   dependencies:
     "@types/express" "*"
-
-"@types/config@^3.3.0":
-  version "3.3.0"
-  resolved "https://registry.yarnpkg.com/@types/config/-/config-3.3.0.tgz#2b632cb37c639bf8d57054561f5a77d31dcebc1e"
-  integrity sha512-9kZSbl3/X3TVNowLCu5HFQdQmD+4287Om55avknEYkuo6R2dDrsp/EXEHUFvfYeG7m1eJ0WYGj+cbcUIhARJAQ==
 
 "@types/connect@*":
   version "3.4.35"
@@ -1693,13 +1677,6 @@ concat-map@0.0.1:
   resolved "https://registry.yarnpkg.com/concat-map/-/concat-map-0.0.1.tgz#d8a96bd77fd68df7793a73036a3ba0d5405d477b"
   integrity sha512-/Srv4dswyQNBfohGpz9o6Yb3Gz3SrUDqBH5rTuhGR7ahtlbYKnVxw2bCFMRljaA7EXHaXZ8wsHdodFvbkhKmqg==
 
-config@^3.3.8:
-  version "3.3.8"
-  resolved "https://registry.yarnpkg.com/config/-/config-3.3.8.tgz#14ef7aef22af25877fdaee696ec64d761feb7be0"
-  integrity sha512-rFzF6VESOdp7wAXFlB9IOZI4ouL05g3A03v2eRcTHj2JBQaTNJ40zhAUl5wRbWHqLZ+uqp/7OE0BWWtAVgrong==
-  dependencies:
-    json5 "^2.2.1"
-
 content-disposition@0.5.4:
   version "0.5.4"
   resolved "https://registry.yarnpkg.com/content-disposition/-/content-disposition-0.5.4.tgz#8b82b4efac82512a02bb0b1dcec9d2c5e8eb5bfe"
@@ -1766,13 +1743,6 @@ data-uri-to-buffer@^4.0.0:
   resolved "https://registry.yarnpkg.com/data-uri-to-buffer/-/data-uri-to-buffer-4.0.0.tgz#b5db46aea50f6176428ac05b73be39a57701a64b"
   integrity sha512-Vr3mLBA8qWmcuschSLAOogKgQ/Jwxulv3RNE4FXnYWRGujzrRWQI4m12fQqRkwX06C0KanhLr4hK+GydchZsaA==
 
-dauria@^2.0.0:
-  version "2.0.0"
-  resolved "https://registry.yarnpkg.com/dauria/-/dauria-2.0.0.tgz#cf53b1a5c548b95e73810e8a25d7c12e80767234"
-  integrity sha512-op2q+AZnMW/PFyggVWNLKzDkv+5tUiWbbkXWauwrbmp9jIGXVPtVen6w4jPhM1LmN3R/dvqHkrLhzO3SRH0uHg==
-  dependencies:
-    iconv-lite "~0.4.13"
-
 debug@2.6.9, debug@^2.6.9:
   version "2.6.9"
   resolved "https://registry.yarnpkg.com/debug/-/debug-2.6.9.tgz#5d128515df134ff327e90a4c93f4e077a536341f"
@@ -1794,7 +1764,7 @@ debug@^3.2.7:
   dependencies:
     ms "^2.1.1"
 
-debug@^4.1.1, debug@^4.3.2, debug@~4.3.1, debug@~4.3.2:
+debug@^4.1.0, debug@^4.1.1, debug@^4.3.2, debug@~4.3.1, debug@~4.3.2:
   version "4.3.4"
   resolved "https://registry.yarnpkg.com/debug/-/debug-4.3.4.tgz#1319f6579357f2338d3337d2cdd4914bb5dcc865"
   integrity sha512-PRWFHuSU3eDtQJPvnNY7Jcket1j0t5OuOsFzPPzsekD52Zl8qUfFIPEiswXqIvHWGVHOgX+7G/vCNNhehwxfkQ==
@@ -2555,7 +2525,7 @@ http-errors@2.0.0:
     statuses "2.0.1"
     toidentifier "1.0.1"
 
-iconv-lite@0.4.24, iconv-lite@~0.4.13:
+iconv-lite@0.4.24:
   version "0.4.24"
   resolved "https://registry.yarnpkg.com/iconv-lite/-/iconv-lite-0.4.24.tgz#2022b4b25fbddc21d2f524974a474aafe733908b"
   integrity sha512-v3MXnZAcvnywkTUEZomIActle7RXXeedOR31wwl7VlyoXO4Qi9arvSenNQWne1TcRwhCL1HwLI21bEqdpj8/rA==
@@ -2818,11 +2788,6 @@ json5@^1.0.1:
   dependencies:
     minimist "^1.2.0"
 
-json5@^2.2.1:
-  version "2.2.1"
-  resolved "https://registry.yarnpkg.com/json5/-/json5-2.2.1.tgz#655d50ed1e6f95ad1a3caababd2b0efda10b395c"
-  integrity sha512-1hqLFMSrGHRHxav9q9gNjJ5EXznIxGVO09xQRrwplcS8qs28pZ8s8hupZAmqDwZUmVZ2Qb2jnyPOWcDH8m8dlA==
-
 jsonwebtoken@^8.5.1:
   version "8.5.1"
   resolved "https://registry.yarnpkg.com/jsonwebtoken/-/jsonwebtoken-8.5.1.tgz#00e71e0b8df54c2121a1f26137df2280673bcc0d"
@@ -3069,6 +3034,11 @@ mocha@^9.2.2:
     yargs "16.2.0"
     yargs-parser "20.2.4"
     yargs-unparser "2.0.0"
+
+moment@^2.29.4:
+  version "2.29.4"
+  resolved "https://registry.yarnpkg.com/moment/-/moment-2.29.4.tgz#3dbe052889fe7c1b2ed966fcb3a77328964ef108"
+  integrity sha512-5LC9SOxjSc2HF6vO2CyuTDNivEdoz2IvyJJGj6X8DJ0eFyfszE0QiEd+iXmBvUP3WHxSjFH/vIsA0EN00cgr8w==
 
 ms@2.0.0:
   version "2.0.0"
