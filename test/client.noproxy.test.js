@@ -44,34 +44,8 @@ function btoa(data) {
   return new Buffer(data).toString('base64')
 }
 
-describe('feathers-s3-client-noproxy', () => {
-  before(async () => {
-    chailint(chai, util)
-    serverApp = express(feathers())
-    serverApp.use(express.json({ limit: 100 * 1024 * 1024 }))
-    serverApp.use(express.urlencoded({ extended: true }))
-    serverApp.configure(rest())
-    serverApp.configure(feathersSocketio())
-    expressServer = await serverApp.listen(3333)
-    clientApp = feathersClient()
-    const socket = io('http://localhost:3333')
-    transport = feathersClient.socketio(socket)
-    // Uncomment to test REST client
-    //transport = feathersClient.rest('http://localhost:3333').superagent(superagent)
-    clientApp.configure(transport)
-  })
-  it('is ES module compatible', () => {
-    expect(typeof Service).to.equal('function')
-    expect(typeof getClientService).to.equal('function')
-  })
-  it('create s3Service', () => {
-    serverApp.use('s3', new Service(options), {
-      methods: ['create', 'get', 'remove', 'createMultipartUpload', 'completeMultipartUpload', 'uploadPart', 'putObject']
-    })
-    s3Service = serverApp.service('s3')
-    expect(s3Service).toExist()
-  })
-  it('create s3ClientService', () => {
+function noproxyTests() {
+  it('create s3 client service', () => {
     s3ClientService = getClientService(clientApp, { servicePath: 's3', transport, useProxy: false, btoa })
     expect(s3ClientService).toExist()
     expect(s3ClientService.createMultipartUpload).toExist()
@@ -167,6 +141,43 @@ describe('feathers-s3-client-noproxy', () => {
     expect(response.ok).toExist()
     expect(response.status).to.equal(200)
   })
+}
+
+describe('feathers-s3-client-noproxy', () => {
+  before(async () => {
+    chailint(chai, util)
+    serverApp = express(feathers())
+    serverApp.use(express.json({ limit: 100 * 1024 * 1024 }))
+    serverApp.use(express.urlencoded({ extended: true }))
+    serverApp.configure(rest())
+    serverApp.configure(feathersSocketio())
+    expressServer = await serverApp.listen(3333)
+  })
+  it('is ES module compatible', () => {
+    expect(typeof Service).to.equal('function')
+    expect(typeof getClientService).to.equal('function')
+  })
+  it('create s3 service', () => {
+    serverApp.use('s3', new Service(options), {
+      methods: ['create', 'get', 'remove', 'createMultipartUpload', 'completeMultipartUpload', 'uploadPart', 'putObject']
+    })
+    s3Service = serverApp.service('s3')
+    expect(s3Service).toExist()
+  })
+  it('create REST client', () => {
+    clientApp = feathersClient()
+    transport = feathersClient.rest('http://localhost:3333').superagent(superagent)
+    clientApp.configure(transport)
+  })
+  noproxyTests()
+  it('create websocket client', () => {
+    clientApp = feathersClient()
+    const socket = io('http://localhost:3333')
+    transport = feathersClient.socketio(socket)
+    clientApp.configure(transport)
+  })
+  noproxyTests()
+  
   after(async () => {
     await expressServer.close()
   })
