@@ -5,15 +5,16 @@ notifications:
   email: false
   slack:
     rooms:
-    - secure: YCzvRkpxOXT9SsjK4T+TJTevmFPhsuNw6kADDBdIaria0gQHADhRhjYRr3DaNyTX9liYmVms8SAzq9iqMHlpcTIK139TnAyaGs44HGLxui04HMJBWnq4fDdjy4LsvVWA3QwI2U/V2HiMKQjWewnuNFoxOnj/lwG+tPLKLVGrH9NXLIq6EjTOkzs6Ujj/jzy7jPWyUAw4KdmIV17ACF0/+VP+gcl1xMZSesKj/66E10QPcC2UYIiJZWvpvrV5y94QhPKfOTQajItJF0SIthoG7X8FIy8BWV3Bq1/2kaAGMK/aPc79x16EtTap6p5F9/ORPdMQYedH0E/0RBCtiSEd69mSda9Y216+B+E3Dbf/iWsDdXWXJ+YwkxRqQUV8t8n8ign4kyrWNKatv3vlPkQV+x7NVXMAHagAw76D2UxEhxX8SUXWTshtMvRavmxTYFROvpVgP5fA4Nv8XpmWJsmA8UfqXt+ELZyaU6erTJ/P4mQCCdV4rvMuOmsyEwfwSePqzwcSYTSasM/XhMltAfOSLVcYfW85Cu+Hk5hZM67tojBwsU/xFVzsN4kDXIcY0ZCuZPVNe0rm62UcNyfujOg2SdH/LseY/c8vixaihHaOfIvdd3LFdND+6c/ejtEDF6rsL0CgVAollMZxSnoXubzCFPg0vFe/dcTwtI5VSKqbwjI=
+      secure: uxlIqDdWJPKe1vuHuaYB9d1h9J1a/op4Nc63t6XkbvAqtzh4/YCyJjtGkhX3E/pfnhjybloET4XiexurBBoUl08gey8Jd3SDqLvypMoQ4E5xTPImJlgzx99JeYw7y/lIMaX3qpXJYXypWcVDSer82Bigvjaahxd/iEQMyENSQocKqidMx+xQ0JsDrexXvaONDOwwd+1Ob0DzL45Z3G77Hsvn+ZLolbt4stPeqnamaRcZfdx+UAxBjilZ53cwFr3Y2xQs/S19BxetLTQu/SDHNPIwzARn5esBXfaZ9nFq88j/3Tu7UmrFUBDHborx/ld/Xp+H6nIOgTqhuAwBgRCu8JKjey21F/T6sI91ggSb6ZT0oTSUhIaLbcWSGmo01jGp5vYw2CYmRnxyLP22isLLSPDhNwG3bopHgzaVyTrJp5+DgL9J1/Fx4T+Rvd2hL5aT0L+5rINSxv9ewGjiWQXa6x1E+0kloZ2Bval/9AmTDxdOL5Rwvvyi3nU3w9YWNAOITaluBh4eDHmcE+0E3nLFnAPx8MKP1sKvF6DyMh8EeaheaJXGU8peDQsBrb8RyPyP8iBj4KQtZ1Abw/cSE5ZK+rry4+1IsrzsBDp3pFbeSeVZTA2UKBOwZmbXE0Nmyx92XfB+fCT+DOXpRxV2D6TRZDzy6YDOaHJEAN3+SnaDgok=
     on_success: always
     on_failure: always
 env:
 - CC_TEST_REPORTER_ID=681b33804ec176222d1afdfdfcd811e2e0e854ad24d6c5f943aee8c34a64e4f4
 before-script:
-- curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
+- curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64
+  > ./cc-test-reporter
 - chmod +x ./cc-test-reporter
-- "./cc-test-reporter before-build"    
+- "./cc-test-reporter before-build"
 script:
 - yarn test
 after_script:

@@ -145,10 +145,11 @@ describe('feathers-s3-client-useproxy', () => {
   before(async () => {
     chailint(chai, util)
     serverApp = express(feathers())
+    // With proxy we need to extend limits as we are transferring object/part to our server
     serverApp.use(express.json({ limit: 100 * 1024 * 1024 }))
     serverApp.use(express.urlencoded({ extended: true }))
     serverApp.configure(rest())
-    serverApp.configure(feathersSocketio())
+    serverApp.configure(feathersSocketio({ maxHttpBufferSize: 1e8 }))
     expressServer = await serverApp.listen(3333)
   })
   it('is ES module compatible', () => {

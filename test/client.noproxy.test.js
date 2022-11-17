@@ -145,10 +145,10 @@ describe('feathers-s3-client-noproxy', () => {
   before(async () => {
     chailint(chai, util)
     serverApp = express(feathers())
-    serverApp.use(express.json({ limit: 100 * 1024 * 1024 }))
+    serverApp.use(express.json({ limit: 1 * 1024 * 1024 }))
     serverApp.use(express.urlencoded({ extended: true }))
     serverApp.configure(rest())
-    serverApp.configure(feathersSocketio())
+    serverApp.configure(feathersSocketio({ maxHttpBufferSize: 1e6 }))
     expressServer = await serverApp.listen(3333)
   })
   it('is ES module compatible', () => {
