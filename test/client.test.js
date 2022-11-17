@@ -38,13 +38,17 @@ const imageFileId = 'image.png'
 const archiveFileId = 'archive.zip'
 const featuresFileId = 'features.geojson'
 
-function btoa(data) {
-  return new Buffer(data).toString('base64')
+function btoa (data) {
+  return Buffer.from(data).toString('base64')
 }
 
-function proxyTests() {
-  it('create s3 client service', () => {
-    s3ClientService = getClientService(clientApp, { servicePath: 's3', transport, useProxy: true, btoa })
+let useProxy = false
+
+function runTests (message) {
+  it('create s3 service' + message, () => {
+    s3ClientService = getClientService(clientApp, { servicePath: 's3', transport, useProxy, btoa })
+    // Change proxy mode for next tests
+    useProxy = !useProxy
     expect(s3ClientService).toExist()
     expect(s3ClientService.createMultipartUpload).toExist()
     expect(s3ClientService.completeMultipartUpload).toExist()
@@ -53,34 +57,34 @@ function proxyTests() {
     expect(s3ClientService.upload).toExist()
     expect(s3ClientService.download).toExist()
   })
-  it('upload text file', async () => {
+  it('upload text file' + message, async () => {
     const blob = new Blob([fs.readFileSync('test/data/text.txt')], { type: 'text/plain' })
     const response = await s3ClientService.upload(textFileId, blob, { expiresIn: 30 })
     expect(response.ok).toExist()
     expect(response.status).to.equal(200)
     expect(response.ETag).toExist()
   })
-  it('upload image file', async () => {
+  it('upload image file' + message, async () => {
     const blob = new Blob([fs.readFileSync('test/data/image.png')], { type: 'image/png' })
     const response = await s3ClientService.upload(imageFileId, blob, { expiresIn: 30 })
     expect(response.ok).toExist()
     expect(response.status).to.equal(200)
     expect(response.ETag).toExist()
   })
-  it('upload zip file', async () => {
+  it('upload zip file' + message, async () => {
     const blob = new Blob([fs.readFileSync('test/data/archive.zip')], { type: 'application/zip' })
     const response = await s3ClientService.upload(archiveFileId, blob, { expiresIn: 30 })
     expect(response.ok).toExist()
     expect(response.status).to.equal(200)
     expect(response.ETag).toExist()
   })
-  it('upload features file', async () => {
+  it('upload features file' + message, async () => {
     const blob = new Blob([fs.readFileSync('test/data/features.geojson')], { type: 'application/geo+json' })
     const response = await s3ClientService.upload(featuresFileId, blob, { expiresIn: 30 })
     expect(response.ok).toExist()
     expect(response.status).to.equal(200)
   })
-  it('download text file', async () => {
+  it('download text file' + message, async () => {
     const filePath = 'test/data/downloaded-text.txt'
     const response = await s3ClientService.download(textFileId, { expiresIn: 30 })
     expect(response.ok).toExist()
@@ -91,7 +95,7 @@ function proxyTests() {
     expect(fs.existsSync(filePath)).beTrue()
     fs.unlinkSync(filePath)
   })
-  it('download image file', async () => {
+  it('download image file' + message, async () => {
     const filePath = 'test/data/downloaded-image.png'
     const response = await s3ClientService.download(imageFileId, { expiresIn: 30 })
     expect(response.ok).toExist()
@@ -102,7 +106,7 @@ function proxyTests() {
     expect(fs.existsSync(filePath)).beTrue()
     fs.unlinkSync(filePath)
   })
-  it('download zip file', async () => {
+  it('download zip file' + message, async () => {
     const filePath = 'test/data/downloaded-archive.zip'
     const response = await s3ClientService.download(archiveFileId, { expiresIn: 30 })
     expect(response.ok).toExist()
@@ -113,7 +117,7 @@ function proxyTests() {
     expect(fs.existsSync(filePath)).beTrue()
     fs.unlinkSync(filePath)
   })
-  it('download features file', async () => {
+  it('download features file' + message, async () => {
     const filePath = 'test/data/downloaded-features.geojson'
     const response = await s3ClientService.download(featuresFileId, { expiresIn: 30 })
     expect(response.ok).toExist()
@@ -124,24 +128,24 @@ function proxyTests() {
     expect(fs.existsSync(filePath)).beTrue()
     fs.unlinkSync(filePath)
   })
-  it('delete text file', async () => {
+  it('delete text file' + message, async () => {
     const response = await s3ClientService.remove(textFileId)
     expect(response.ok).toExist()
     expect(response.status).to.equal(200)
   })
-  it('delete image file', async () => {
+  it('delete image file' + message, async () => {
     const response = await s3ClientService.remove(imageFileId)
     expect(response.ok).toExist()
     expect(response.status).to.equal(200)
   })
-  it('delete archive file', async () => {
+  it('delete archive file' + message, async () => {
     const response = await s3ClientService.remove(archiveFileId)
     expect(response.ok).toExist()
     expect(response.status).to.equal(200)
   })
 }
 
-describe('feathers-s3-client-useproxy', () => {
+describe('feathers-s3-client', () => {
   before(async () => {
     chailint(chai, util)
     serverApp = express(feathers())
@@ -168,15 +172,16 @@ describe('feathers-s3-client-useproxy', () => {
     transport = feathersClient.rest('http://localhost:3333').superagent(superagent)
     clientApp.configure(transport)
   })
-  proxyTests()
+  runTests(' with REST client and without proxy')
+  runTests(' with REST client and with proxy')
   it('create websocket client', () => {
     clientApp = feathersClient()
     socket = io('http://localhost:3333')
     transport = feathersClient.socketio(socket)
     clientApp.configure(transport)
   })
-  proxyTests()
-  
+  runTests(' with websocket client and without proxy')
+  runTests(' with websocket client and with proxy')
   after(async () => {
     await expressServer.close()
   })

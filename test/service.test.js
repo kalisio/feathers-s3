@@ -47,7 +47,7 @@ describe('feathers-s3-service', () => {
     expect(service).toExist()
   })
   it('createMultipartUpload', async () => {
-    const response = await service.createMultipartUpload({ id: fileId, type: blob.type  })
+    const response = await service.createMultipartUpload({ id: fileId, type: blob.type })
     expect(response.ok).toExist()
     expect(response.status).to.equal(200)
     expect(response.uploadId).toExist()

@@ -29,7 +29,8 @@ yarn add @kalisio/feathers-s3
 Create an instance of the service with the given options.
 
 * `options.s3Client`: the s3Client configuration [required]
-* `options.bucket`: the default bucket to use [optional]
+* `options.bucket`: the default bucket to use [optional as it can also be specified in request payload]
+* `options.atob`: the ascii to binary function used to transform received data into a Buffer [optional as defaults is to transform from base64]
 
 #### create (data, params)
 
@@ -122,7 +123,7 @@ The payload `data` must contain the following properties:
 
 #### getClientService (app, options)
 
-Return the client service interface. The client service exposes the custom methods defined in the [Service](#service) and is also decorated with 2 helper functions that really simplify the logic when implementing a client application.
+Return the client service interface. The client service exposes the custom methods defined in the [Service](#service) and is also decorated with 2 helper functions that really simplify the logic when implementing a client application, notably for multipart upload.
 
 | Parameters | Description | Required |
 |---|---|---|
@@ -134,6 +135,8 @@ The options are:
 |---|---|---|
 | `chunkSize` | the size of the chunk to perfom multipart upload | `5mb` |
 | `useProxy` | define whether to use proxies custom methods | `false` |
+| `btoa` | the binary to ascii function used to transform sent data into a string | transform to base64 |
+
 
 #### upload (id, blob, options)
 
