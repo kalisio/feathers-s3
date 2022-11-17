@@ -45,8 +45,8 @@ The payload `data` must contain the following properties:
 |---|---|---|
 | `command` | the command for which the presigned URL should be created. The possible values are `GetObject`, `PutObject` and `UploadPart`. | yes |
 | `id` |  the object key. Note that the final computed **Key** takes into account the `prefix` option of the service. | yes |
-| `{u|U}ploadId` | the **UploadId** generated when creating a mutlipart upload. | yes if the command is `UploadPart` |
-| `{p|P}artNumber` | the **PartNumber** of the part to be uploaded. | yes if the command is `UploadPart` |
+| `{u\|U}ploadId` | the **UploadId** generated when calling the [createMultipartUpload](#createmultipartupload-data-params) method. | yes if the command is `UploadPart` |
+| `{p\|P}artNumber` | the **PartNumber** of the part to be uploaded. | yes if the command is `UploadPart` |
 
 #### get (id, params)
 
@@ -90,12 +90,12 @@ The payload `data` must contain the following properties:
 | Property | Description | Required |
 |---|---|---|
 | `id` |  the object key. Note that the final computed **Key** takes into account the `prefix` option of the service. | yes |
-| `{u|U}ploadId` | the **UploadId** generated when calling the [createMultipartUpload](#createmultipartupload-data-params) method. | yes |
+| `{u\|U}ploadId` | the **UploadId** generated when calling the [createMultipartUpload](#createmultipartupload-data-params) method. | yes |
 | `parts` | the uploaded parts. It consists in an array of objects following the schema: `{ PartNumber: <number>, ETag: <etag> )}`. | yes |
 
 Any optional properties are forwarded to the underlying `CompleteMultipartUploadCommand` command parameters.
 
-#### uploadPart
+#### uploadPart (data, params)
 
 Upload a part to a bucket.
 
@@ -104,12 +104,12 @@ The payload `data` must contain the following properties:
 | Property | Description | Required |
 |---|---|---|
 | `id` |  the object key. Note that the final computed **Key** takes into account the `prefix` option of the service. | yes |
-| `{u|UplaodId` | the **UploadId** generated when calling the [createMultipartUpload](#createmultipartupload-data-params) method. | yes |
-| `partNumber` | the part number. | yes |
+| `{u\|U}ploadId` | the **UploadId** generated when calling the [createMultipartUpload](#createmultipartupload-data-params) method. | yes |
+| `{p\|P}artNumber` | the part number. | yes |
 | `buffer` | the content to be uploaded. | yes |
 | `type` | the content type to be uploaded. | yes |
 
-#### putObject
+#### putObject (data, params)
 
 Upload an object to a bucket.
 
