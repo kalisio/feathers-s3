@@ -52,10 +52,8 @@ describe('feathers-s3-service', () => {
   })
   it('createMultipartUpload', async () => {
     const response = await service.createMultipartUpload({ id: fileId, type: blob.type })
-    expect(response.ok).toExist()
-    expect(response.status).to.equal(200)
-    expect(response.uploadId).toExist()
-    uploadId = response.uploadId
+    expect(response.UploadId).toExist()
+    uploadId = response.UploadId
   })
   it('uploadPart 1', async () => {
     const response = await service.uploadPart({
@@ -65,7 +63,6 @@ describe('feathers-s3-service', () => {
       partNumber: 1,
       uploadId
     }, { expiresIn: 30 })
-    expect(response.ok).toExist()
     expect(response.ETag).toExist()
     parts.push({ PartNumber: 1, ETag: response.ETag })
   })
@@ -77,7 +74,6 @@ describe('feathers-s3-service', () => {
       partNumber: 2,
       uploadId
     }, { expiresIn: 30 })
-    expect(response.ok).toExist()
     expect(response.ETag).toExist()
     parts.push({ PartNumber: 2, ETag: response.ETag })
   })
@@ -87,27 +83,25 @@ describe('feathers-s3-service', () => {
       uploadId,
       parts
     })
-    expect(response.ok).toExist()
-    expect(response.status).to.equal(200)
+    expect(response.ETag).toExist()
+    expect(response.VersionId).toExist()
+    expect(response.Location).toExist()
   })
   it('download file with middleware', async () => {
     const response = await superagent
       .get(`http://localhost:3333/s3-objects/${fileId}`)
     expect(response.text).to.equal(fileContent.toString())
   })
-  it('download file with service operation', async () => {
+  it('download file with service method', async () => {
     const response = await service.get(fileId)
-    expect(response.ok).toExist()
     expect(response.buffer).toExist()
-    expect(response.status).to.equal(200)
     expect(response.type).to.equal('application/geo+json')
     const buffer = service.atob(response.buffer)
     expect(buffer.toString()).to.equal(fileContent.toString())
   })
   it('remove uploaded file', async () => {
     const response = await service.remove(fileId)
-    expect(response.ok).toExist()
-    expect(response.status).to.equal(200)
+    expect(response.$metadata.httpStatusCode).to.equal(204)
   })
   after(async () => {
     await expressServer.close()

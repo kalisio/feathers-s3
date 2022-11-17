@@ -45,8 +45,8 @@ The payload `data` must contain the following properties:
 |---|---|---|
 | `command` | the command for which the presigned URL should be created. The possible values are `GetObject`, `PutObject` and `UploadPart`. | yes |
 | `id` |  the object key. Note that the final computed **Key** takes into account the `prefix` option of the service. | yes |
-| `uploadId` | the **UploadId** generated when creating a mutlipart upload. | yes if the command is `UploadPart` |
-| `partNumber` | the **PartNumber** of the part to be uploaded. | yes if the command is `UploadPart` |
+| `{u|U}ploadId` | the **UploadId** generated when creating a mutlipart upload. | yes if the command is `UploadPart` |
+| `{p|P}artNumber` | the **PartNumber** of the part to be uploaded. | yes if the command is `UploadPart` |
 
 #### get (id, params)
 
@@ -75,6 +75,7 @@ The payload `data` must contain the following properties:
 | Property | Description | Required |
 |---|---|---|
 | `id` |  the object key. Note that the final computed **Key** takes into account the `prefix` option of the service. | yes |
+| `type` | the content type to be uploaded. | yes |
 
 Any optional properties are forwarded to the underlying `CreateMultipartUploadCommand` command parameters.
 
@@ -89,7 +90,7 @@ The payload `data` must contain the following properties:
 | Property | Description | Required |
 |---|---|---|
 | `id` |  the object key. Note that the final computed **Key** takes into account the `prefix` option of the service. | yes |
-| `uploadId` | the **UploadId** provided by the `createMultipartUpload` method. | yes |
+| `{u|U}ploadId` | the **UploadId** generated when calling the [createMultipartUpload](#createmultipartupload-data-params) method. | yes |
 | `parts` | the uploaded parts. It consists in an array of objects following the schema: `{ PartNumber: <number>, ETag: <etag> )}`. | yes |
 
 Any optional properties are forwarded to the underlying `CompleteMultipartUploadCommand` command parameters.
@@ -102,10 +103,11 @@ The payload `data` must contain the following properties:
 
 | Property | Description | Required |
 |---|---|---|
-| `command` | the command to define whether to upload a complete object, `PutObject` or a part, `UploadPart`. | yes | 
 | `id` |  the object key. Note that the final computed **Key** takes into account the `prefix` option of the service. | yes |
-| `uplaodId` | the **UploadId** generated when creating 
-| `buffer` | the content of the object to be uploaded. | yes |
+| `{u|UplaodId` | the **UploadId** generated when calling the [createMultipartUpload](#createmultipartupload-data-params) method. | yes |
+| `partNumber` | the part number. | yes |
+| `buffer` | the content to be uploaded. | yes |
+| `type` | the content type to be uploaded. | yes |
 
 #### putObject
 
@@ -115,9 +117,9 @@ The payload `data` must contain the following properties:
 
 | Property | Description | Required |
 |---|---|---|
-| `command` | the command to define whether to upload a complete object, `PutObject` or a part, `UploadPart`. | yes | 
 | `id` |  the object key. Note that the final computed **Key** takes into account the `prefix` option of the service. | yes |
-| `buffer` | the content of the object to be uploaded. | yes |
+| `buffer` | the content to be uploaded. | yes |
+| `type` | the content type to be uploaded. | yes |
 
 ### Client
 
@@ -136,7 +138,6 @@ The options are:
 | `chunkSize` | the size of the chunk to perfom multipart upload | `5mb` |
 | `useProxy` | define whether to use proxies custom methods | `false` |
 | `btoa` | the binary to ascii function used to transform sent data into a string | transform to base64 |
-
 
 #### upload (id, blob, options)
 
