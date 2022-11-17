@@ -92,7 +92,6 @@ function runTests (message) {
     expect(response.status).to.equal(200)
   })
   it('download text file' + message, async () => {
-    const filePath = 'test/data/downloaded-text.txt'
     const response = await s3ClientService.download(textFileId, { expiresIn: 30 })
     expect(response.ok).toExist()
     expect(response.status).to.equal(200)
@@ -101,7 +100,6 @@ function runTests (message) {
     expect(atob(response.buffer).toString()).to.equal(textFileContent.toString())
   })
   it('download image file' + message, async () => {
-    const filePath = 'test/data/downloaded-image.png'
     const response = await s3ClientService.download(imageFileId, { expiresIn: 30 })
     expect(response.ok).toExist()
     expect(response.status).to.equal(200)
@@ -110,7 +108,6 @@ function runTests (message) {
     expect(atob(response.buffer).toString()).to.equal(imageFileContent.toString())
   })
   it('download zip file' + message, async () => {
-    const filePath = 'test/data/downloaded-archive.zip'
     const response = await s3ClientService.download(archiveFileId, { expiresIn: 30 })
     expect(response.ok).toExist()
     expect(response.status).to.equal(200)
@@ -119,7 +116,6 @@ function runTests (message) {
     expect(atob(response.buffer).toString()).to.equal(archiveFileContent.toString())
   })
   it('download features file' + message, async () => {
-    const filePath = 'test/data/downloaded-features.geojson'
     const response = await s3ClientService.download(featuresFileId, { expiresIn: 30 })
     expect(response.ok).toExist()
     expect(response.status).to.equal(200)
