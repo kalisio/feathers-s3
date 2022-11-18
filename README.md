@@ -6,9 +6,25 @@
 [![Test Coverage](https://codeclimate.com/github/kalisio/feathers-s3/badges/coverage.svg)](https://codeclimate.com/github/kalisio/feathers-s3/coverage)
 [![Download Status](https://img.shields.io/npm/dm/@kalisio/feathers-s3.svg?style=flat-square)](https://www.npmjs.com/package/@kalisio/feathers-s3)
 
-> Manage s3 objects using presigned url
+> Manage s3 objects
 
-## Installation
+## Principle
+
+### Upload
+
+[Upload principle](./docs/feathers-s3-upload.png)
+
+### Multipart upload
+
+[Mulitpart upload principle](./docs/feathers-s3-multipart-upload.png)
+
+### Download
+
+[Donwload principle](./docs/feathers-s3-download.png)
+
+## Usage
+
+### Installation
 
 ```shell
 npm install @kalisio/feathers-s3 --save
@@ -164,3 +180,15 @@ If the `proxy` option is undefined. The client performs the download action dire
 | `id` |  the object key. Note that the final computed **Key** takes into account the `prefix` option of the service. | yes |
 | `type` | the type of the content to be downloaded. | yes |
 | `options` | options to be forwarded to the underlying service methods. | no |
+
+## License
+
+Copyright (c) 2017-20xx Kalisio
+
+Licensed under the [MIT license](LICENSE).
+
+## Authors
+
+This project is sponsored by 
+
+[![Kalisio](https://s3.eu-central-1.amazonaws.com/kalisioscope/kalisio/kalisio-logo-black-256x84.png)](https://kalisio.com)
