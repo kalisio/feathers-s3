@@ -8,6 +8,11 @@
 
 > Manage s3 objects
 
+`feathers-s3` consists of three parts:
+* [Service](#service) that pvoides basic methods for using **S3** API.
+* [Middlewares](#middlewares) that provides an [Express middleware](http://expressjs.com/en/guide/using-middleware.html) to access an object from the store.
+* [Client](#client) that provides helper functions to simplify the `upload` and `download` logic for the client side.
+
 ## Principle
 
 ### Upload
