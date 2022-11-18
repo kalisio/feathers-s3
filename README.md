@@ -12,15 +12,15 @@
 
 ### Upload
 
-[Upload principle](./docs/feathers-s3-upload.png)
+![Upload principle](./docs/feathers-s3-upload.png)
 
 ### Multipart upload
 
-[Mulitpart upload principle](./docs/feathers-s3-multipart-upload.png)
+![Mulitpart upload principle](./docs/feathers-s3-multipart-upload.png)
 
 ### Download
 
-[Donwload principle](./docs/feathers-s3-download.png)
+![Donwload principle](./docs/feathers-s3-download.png)
 
 ## Usage
 
