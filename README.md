@@ -62,6 +62,10 @@ or
 yarn add @kalisio/feathers-s3
 ```
 
+### Example
+
+
+
 ## API
 
 `feathers-s3` consists of three parts:
@@ -166,8 +170,8 @@ Upload an object to a bucket.
 
 The payload `data` must contain the following properties:
 
-| Property | Description | Required |
-|---|---|---|
+| Property | Description |
+|---|---|
 | `id` |  the object key. Note that the final computed **Key** takes into account the `prefix` option of the service. |
 | `buffer` | the content to be uploaded. |
 | `type` | the content type to be uploaded. |
@@ -180,7 +184,7 @@ It expect a route path like `path/to/get/*` where the last parameter is the path
 It is associated with an S3 service to use the same configuration (s3client, bucket, etc...).
 
 | Argument | Description | Required |
-|---|---|
+|---|---|---|
 | `service` | the service to be associated to this midlleware. | yes |
 
 ### Client
@@ -198,7 +202,8 @@ The options are:
 
 | Options | Description | Default |
 |---|---|---|
-| `chunkSize` | the size of the chunk to perfom multipart upload | `5mb` |
+| `transport` | the transport layer used by the **Feathers** client application. For now it is required. |
+| `chunkSize` | the size of the chunk to perfom multipart upload | `5MB` |
 | `useProxy` | define whether to use proxies custom methods | `false` |
 | `btoa` | the binary to ascii function used to transform sent data into a string | transform to base64 |
 | `atob` | the ascii to binary function used to transform received data into a Buffer | transform from base64 |
