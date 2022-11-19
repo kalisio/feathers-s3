@@ -28,18 +28,17 @@ To address these drawbacks, `feathers-s3` provides:
 
 ## Principle
 
-`feathers-s3` consists of three parts:
-* [Service](#service) that pvoides basic methods for using **S3** API.
-* [Middlewares](#middlewares) that provides an [Express middleware](http://expressjs.com/en/guide/using-middleware.html) to access an object from the store.
-* [Client](#client) that provides helper functions to simplify the `upload` and `download` logic for the client side.
-
 The following sections illustrate the different process implemented by `feathers-s3`:
 
-### Basic Upload
+### Upload
+
+The `upload` process can be a **singlepart** upload or a **multipart** upload depending on the size of the object to be uploaded. If the size is greater than a `chunkSize` (by default 5MB), `feathers-s3` performs a **multipart** upload. Otherwise it performs a **singlepart** upload. 
+
+#### Singlepart upload
 
 ![Upload principle](./docs/feathers-s3-upload.png)
 
-### Multipart upload
+#### Multipart upload
 
 ![Mulitpart upload principle](./docs/feathers-s3-multipart-upload.png)
 
@@ -62,6 +61,11 @@ yarn add @kalisio/feathers-s3
 ```
 
 ## API
+
+`feathers-s3` consists of three parts:
+* [Service](#service) that pvoides basic methods for using **S3** API.
+* [Middlewares](#middlewares) that provides an [Express middleware](http://expressjs.com/en/guide/using-middleware.html) to access an object from the store.
+* [Client](#client) that provides helper functions to simplify the `upload` and `download` logic for the client side.
 
 ### Service
 
