@@ -83,7 +83,7 @@ Generate a presigned URL for the following commands:
 The payload `data` must contain the following properties:
 
 | Property | Description |
-|---|---|---|
+|---|---|
 | `command` | the command for which the presigned URL should be created. The possible values are `GetObject`, `PutObject` and `UploadPart`. |
 | `id` |  the object key. Note that the final computed **Key** takes into account the `prefix` option of the service. |
 | `{u\|U}ploadId` | the **UploadId** generated when calling the [createMultipartUpload](#createmultipartupload-data-params) method. It is required if the command is `UploadPart` |
@@ -114,7 +114,7 @@ It wraps the [CreateMultipartUploadCommand](https://docs.aws.amazon.com/AWSJavaS
 The payload `data` must contain the following properties:
 
 | Property | Description |
-|---|---|---|
+|---|---|
 | `id` |  the object key. Note that the final computed **Key** takes into account the `prefix` option of the service. |
 | `type` | the content type to be uploaded. |
 
@@ -128,8 +128,8 @@ It wraps the [CompleteMultipartUploadCommand](https://docs.aws.amazon.com/AWSJav
 
 The payload `data` must contain the following properties:
 
-| Property | Description | Required |
-|---|---|---|
+| Property | Description |
+|---|---|
 | `id` |  the object key. Note that the final computed **Key** takes into account the `prefix` option of the service. |
 | `{u\|U}ploadId` | the **UploadId** generated when calling the [createMultipartUpload](#createmultipartupload-data-params) method. |
 | `parts` | the uploaded parts. It consists in an array of objects following the schema: `{ PartNumber: <number>, ETag: <etag> )}`. |
@@ -142,8 +142,8 @@ Upload a part to a bucket.
 
 The payload `data` must contain the following properties:
 
-| Property | Description | Required |
-|---|---|---|
+| Property | Description |
+|---|---|
 | `id` |  the object key. Note that the final computed **Key** takes into account the `prefix` option of the service. |
 | `{u\|U}ploadId` | the **UploadId** generated when calling the [createMultipartUpload](#createmultipartupload-data-params) method. |
 | `{p\|P}artNumber` | the part number. |
