@@ -15,8 +15,8 @@ Using **Presigned URL** has different pros and cons:
 
 * Pros
   - It decreases the necessary resources of the server because the transfer process is established between the client and the S3 service.
-  - It speed up the transfer process as it can be parallelized.
-  - It reduces the rosk your server is becoming a bottleneck.
+  - It speeds up the transfer process because it can be easily parallelized.
+  - It reduces the risk of your server becoming a bottleneck.
   - It is inherently secure.
 * Cons
   - It involves extra complexity on the client side.
