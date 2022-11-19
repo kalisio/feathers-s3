@@ -176,7 +176,7 @@ The payload `data` must contain the following properties:
 
 #### getObject (service)
 
-It expect a route path like `path/to/get/endpoint/*` where the last parameter is the path to the object.
+It expect a route path like `path/to/get/*` where the last parameter is the path to the object.
 It is associated with an S3 service to use the same configuration (s3client, bucket, etc...).
 
 | Argument | Description | Required |
