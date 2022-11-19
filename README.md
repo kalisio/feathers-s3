@@ -21,6 +21,7 @@ Using **Presigned URL** has different pros and cons:
 * Cons
   - It involves extra complexity on the client side.
   - It requires your S3 bucket has CORS enabled.
+  - It requires your provider support S3 Signature Version 4.
   - It constrains the access to the object for a short time.
 
 To address these drawbacks, `feathers-s3` provides:
@@ -64,7 +65,56 @@ yarn add @kalisio/feathers-s3
 
 ### Example
 
+This basic example illustrates how to use the `feathers-s3`:
 
+#### Server side
+
+```js
+import feathers from '@feathersjs/feathers'
+import socketio from '@feathersjs/socketio'
+import { Service } from '@kalisio/feathers-s3'
+
+// Create the server app
+const serverApp = express(feathers())
+serverApp.configure(socketio({ maxHttpBufferSize: 1e8 }))   // ensure socketio can transport a chunck
+await serverApp.listen(3333)
+// Create the S3 service
+serverApp.use('s3', new Service({
+  s3Client: {
+    credentials: {
+      accessKeyId: 'XXXXXXXXXXX',
+      secretAccessKey: 'YYYYYYYYYY'
+    },
+    signatureVersion: 'v4'
+  },
+  bucket: 'my-bucket'
+}))
+```
+
+#### Client side
+
+```js
+import feathers from '@feathersjs/client'
+import socketio from '@feathersjs/socketio'
+import { getClientService } from '@kalisio/feathers-s3'
+import fs from 'fs'
+import { Blob } from 'buffer'
+
+// Create the client app
+const clientApp = feathers()
+socket = io('http://localhost:3333')
+transport = feathers.socketio(socket)
+clientApp.configure(transport)
+// Get the S3 service
+const s3ClientService = getClientService(clientApp, { transport })
+// Create a blob with the object to be uploaded
+const content = fs.readFileSync('path/to/the/image.png')
+const blob = new Blob([content], { type: 'image/png' })
+// Upload a file to the to the bucket using the key path/to/my/object
+await s3ClientService.upload('path/to/my/object', blob, { expiresIn: 30 })
+```
+
+To have a more complex use case, please have a look at the [tests](./test).
 
 ## API
 
@@ -203,10 +253,11 @@ The options are:
 | Options | Description | Default |
 |---|---|---|
 | `transport` | the transport layer used by the **Feathers** client application. For now it is required. |
-| `chunkSize` | the size of the chunk to perfom multipart upload | `5MB` |
-| `useProxy` | define whether to use proxies custom methods | `false` |
-| `btoa` | the binary to ascii function used to transform sent data into a string | transform to base64 |
-| `atob` | the ascii to binary function used to transform received data into a Buffer | transform from base64 |
+| `servicePath` | the path to the service. | `s3` |
+| `chunkSize` | the size of the chunk to perfom multipart upload. | `5MB` |
+| `useProxy` | define whether to use proxies custom methods. | `false` |
+| `btoa` | the binary to ascii function used to transform sent data into a string. | transform to base64 |
+| `atob` | the ascii to binary function used to transform received data into a Buffer. | transform from base64 |
 
 #### upload (id, blob, options)
 
