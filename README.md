@@ -21,10 +21,12 @@ Using **Presigned URL** has different pros and cons:
 * Cons
   - It involves extra complexity on the client side.
   - It requires your S3 bucket has CORS enabled.
+  - It constrains the access to the object for a short time.
 
 To address these drawbacks, `feathers-s3` provides:
-* **helper functions** to use the library from a client application.
-* a **proxy** mode that allows you to use **presigned URL** or **service methods** in case your S3 provider does not support CORS settings.
+* **Helper functions** to ease the use of the library from a client application.
+* An [Express middleware](http://expressjs.com/en/guide/using-middleware.html) useful to get objects without **presignedl url**. It let you access the object without any time constraint that come with the use of **presigned url** or access portion of an object using [range request](https://developer.mozilla.org/en-US/docs/Web/HTTP/Range_requests).
+* A **proxy** mode that let you use **service methods** that don't rely on **presigned URL** in case your S3 provider doesn't support CORS settings.
 
 ## Principle
 
@@ -71,11 +73,15 @@ yarn add @kalisio/feathers-s3
 
 #### Service (options)
 
-Create an instance of the service with the given options.
+Create an instance of the service with the given options:
 
-* `options.s3Client`: the s3Client configuration [required]
-* `options.bucket`: the default bucket to use [optional as it can also be specified in request payload]
-* `options.atob`: the ascii to binary function used to transform received data into a Buffer [optional as defaults is to transform from base64]
+| Parameter | Description | Required |
+|---|---|---|
+|`s3Client` | the s3Client [configuration](https://docs.aws.amazon.com/AWSJavaScriptSDK/v3/latest/clients/client-s3/classes/s3client.html#config). | yes |
+| `bucket` |  the bucket to use. | yes |
+| `prefix` | an optional prefix to use when computing the final **Key** | no |
+| `btoa` | the binary to ascii function used to transform sent data into a string. Default is to transform from base64. | no |
+| `atob` | the ascii to binary function used to transform received data into a Buffer. Default is to transform from base64. | no |
 
 #### create (data, params)
 
@@ -166,6 +172,17 @@ The payload `data` must contain the following properties:
 | `buffer` | the content to be uploaded. |
 | `type` | the content type to be uploaded. |
 
+### Middlewares
+
+#### getObject (service)
+
+It expect a route path like `path/to/get/endpoint/*` where the last parameter is the path to the object.
+It is associated with an S3 service to use the same configuration (s3client, bucket, etc...).
+
+| Argument | Description | Required |
+|---|---|
+| `service` | the service to be associated to this midlleware. | yes |
+
 ### Client
 
 #### getClientService (app, options)
@@ -184,6 +201,7 @@ The options are:
 | `chunkSize` | the size of the chunk to perfom multipart upload | `5mb` |
 | `useProxy` | define whether to use proxies custom methods | `false` |
 | `btoa` | the binary to ascii function used to transform sent data into a string | transform to base64 |
+| `atob` | the ascii to binary function used to transform received data into a Buffer | transform from base64 |
 
 #### upload (id, blob, options)
 
