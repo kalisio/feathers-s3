@@ -6,16 +6,36 @@
 [![Test Coverage](https://codeclimate.com/github/kalisio/feathers-s3/badges/coverage.svg)](https://codeclimate.com/github/kalisio/feathers-s3/coverage)
 [![Download Status](https://img.shields.io/npm/dm/@kalisio/feathers-s3.svg?style=flat-square)](https://www.npmjs.com/package/@kalisio/feathers-s3)
 
-> Manage s3 objects
+> `feathers-s3` allows to deal with [AWS S3 API](https://docs.aws.amazon.com/AmazonS3/latest/API/Welcome.html) compatble storages.
+
+Unlike the solution [feathers-blob](https://github.com/feathersjs-ecosystem/feathers-blob) which provides a store abstraction, `feathers-s3` is limited to
+be used with the stores that provide an S3 compatible API. However, it takes advantage of the **S3 API** by using [presigned URLs](https://docs.aws.amazon.com/AmazonS3/latest/userguide/using-presigned-url.html) to manage (uplaod, share) objects on a store.
+
+Using **Presigned URL** has different pros and cons:
+
+* Pros
+  - It decreases the necessary resources of the server because the transfer process is established between the client and the S3 service.
+  - It speed up the transfer process as it can be parallelized.
+  - It reduces the rosk your server is becoming a bottleneck.
+  - It is inherently secure.
+* Cons
+  - It involves extra complexity on the client side.
+  - It requires your S3 bucket has CORS enabled.
+
+To address these drawbacks, `feathers-s3` provides:
+* **helper functions** to use the library from a client application.
+* a **proxy** mode that allows you to use **presigned URL** or **service methods** in case your S3 provider does not support CORS settings.
+
+## Principle
 
 `feathers-s3` consists of three parts:
 * [Service](#service) that pvoides basic methods for using **S3** API.
 * [Middlewares](#middlewares) that provides an [Express middleware](http://expressjs.com/en/guide/using-middleware.html) to access an object from the store.
 * [Client](#client) that provides helper functions to simplify the `upload` and `download` logic for the client side.
 
-## Principle
+The following sections illustrate the different process implemented by `feathers-s3`:
 
-### Upload
+### Basic Upload
 
 ![Upload principle](./docs/feathers-s3-upload.png)
 
@@ -62,12 +82,12 @@ Generate a presigned URL for the following commands:
 
 The payload `data` must contain the following properties:
 
-| Property | Description | Required |
+| Property | Description |
 |---|---|---|
-| `command` | the command for which the presigned URL should be created. The possible values are `GetObject`, `PutObject` and `UploadPart`. | yes |
-| `id` |  the object key. Note that the final computed **Key** takes into account the `prefix` option of the service. | yes |
-| `{u\|U}ploadId` | the **UploadId** generated when calling the [createMultipartUpload](#createmultipartupload-data-params) method. | yes if the command is `UploadPart` |
-| `{p\|P}artNumber` | the **PartNumber** of the part to be uploaded. | yes if the command is `UploadPart` |
+| `command` | the command for which the presigned URL should be created. The possible values are `GetObject`, `PutObject` and `UploadPart`. |
+| `id` |  the object key. Note that the final computed **Key** takes into account the `prefix` option of the service. |
+| `{u\|U}ploadId` | the **UploadId** generated when calling the [createMultipartUpload](#createmultipartupload-data-params) method. It is required if the command is `UploadPart` |
+| `{p\|P}artNumber` | the **PartNumber** of the part to be uploaded. It is required  if the command is `UploadPart` |
 
 #### get (id, params)
 
@@ -93,10 +113,10 @@ It wraps the [CreateMultipartUploadCommand](https://docs.aws.amazon.com/AWSJavaS
 
 The payload `data` must contain the following properties:
 
-| Property | Description | Required |
+| Property | Description |
 |---|---|---|
-| `id` |  the object key. Note that the final computed **Key** takes into account the `prefix` option of the service. | yes |
-| `type` | the content type to be uploaded. | yes |
+| `id` |  the object key. Note that the final computed **Key** takes into account the `prefix` option of the service. |
+| `type` | the content type to be uploaded. |
 
 Any optional properties are forwarded to the underlying `CreateMultipartUploadCommand` command parameters.
 
@@ -110,9 +130,9 @@ The payload `data` must contain the following properties:
 
 | Property | Description | Required |
 |---|---|---|
-| `id` |  the object key. Note that the final computed **Key** takes into account the `prefix` option of the service. | yes |
-| `{u\|U}ploadId` | the **UploadId** generated when calling the [createMultipartUpload](#createmultipartupload-data-params) method. | yes |
-| `parts` | the uploaded parts. It consists in an array of objects following the schema: `{ PartNumber: <number>, ETag: <etag> )}`. | yes |
+| `id` |  the object key. Note that the final computed **Key** takes into account the `prefix` option of the service. |
+| `{u\|U}ploadId` | the **UploadId** generated when calling the [createMultipartUpload](#createmultipartupload-data-params) method. |
+| `parts` | the uploaded parts. It consists in an array of objects following the schema: `{ PartNumber: <number>, ETag: <etag> )}`. |
 
 Any optional properties are forwarded to the underlying `CompleteMultipartUploadCommand` command parameters.
 
@@ -124,11 +144,11 @@ The payload `data` must contain the following properties:
 
 | Property | Description | Required |
 |---|---|---|
-| `id` |  the object key. Note that the final computed **Key** takes into account the `prefix` option of the service. | yes |
-| `{u\|U}ploadId` | the **UploadId** generated when calling the [createMultipartUpload](#createmultipartupload-data-params) method. | yes |
-| `{p\|P}artNumber` | the part number. | yes |
-| `buffer` | the content to be uploaded. | yes |
-| `type` | the content type to be uploaded. | yes |
+| `id` |  the object key. Note that the final computed **Key** takes into account the `prefix` option of the service. |
+| `{u\|U}ploadId` | the **UploadId** generated when calling the [createMultipartUpload](#createmultipartupload-data-params) method. |
+| `{p\|P}artNumber` | the part number. |
+| `buffer` | the content to be uploaded. |
+| `type` | the content type to be uploaded. |
 
 #### putObject (data, params)
 
@@ -138,9 +158,9 @@ The payload `data` must contain the following properties:
 
 | Property | Description | Required |
 |---|---|---|
-| `id` |  the object key. Note that the final computed **Key** takes into account the `prefix` option of the service. | yes |
-| `buffer` | the content to be uploaded. | yes |
-| `type` | the content type to be uploaded. | yes |
+| `id` |  the object key. Note that the final computed **Key** takes into account the `prefix` option of the service. |
+| `buffer` | the content to be uploaded. |
+| `type` | the content type to be uploaded. |
 
 ### Client
 
@@ -148,12 +168,13 @@ The payload `data` must contain the following properties:
 
 Return the client service interface. The client service exposes the custom methods defined in the [Service](#service) and is also decorated with 2 helper functions that really simplify the logic when implementing a client application, notably for multipart upload.
 
-| Parameters | Description | Required |
+| Argument | Description |  Required |
 |---|---|---|
 | `app` |  the **Feathers** client application | yes |
 | `options` | the options to pass to the client service | no |
 
 The options are:
+
 | Options | Description | Default |
 |---|---|---|
 | `chunkSize` | the size of the chunk to perfom multipart upload | `5mb` |
@@ -168,7 +189,7 @@ According the size of chunk you set when instanciang the client service and the 
 
 If the `proxy` option is undefined. The client performs the upload action directly using **fetch**. Otherwise, it uses the [proxyUpload](#proxyupload) custom method.
 
-| Parameters | Description | Required |
+| Argument | Description | Required |
 |---|---|---|
 | `id` |  the object key. Note that the final computed **Key** takes into account the `prefix` option of the service. | yes |
 | `blob` | the content of the object to be uploaded defined as a **Blob**. | yes |
@@ -180,7 +201,7 @@ Download an object from the bucket with the given key `id`.
 
 If the `proxy` option is undefined. The client performs the download action directly using **fetch**. Otherwise, it uses the [getObject](#getObject) custom method.
 
-| Parameters | Description | Required |
+| Argument | Description | Required |
 |---|---|---|
 | `id` |  the object key. Note that the final computed **Key** takes into account the `prefix` option of the service. | yes |
 | `type` | the type of the content to be downloaded. | yes |
