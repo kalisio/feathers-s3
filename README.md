@@ -8,8 +8,8 @@
 
 > `feathers-s3` allows to deal with [AWS S3 API](https://docs.aws.amazon.com/AmazonS3/latest/API/Welcome.html) compatble storages.
 
-Unlike the solution [feathers-blob](https://github.com/feathersjs-ecosystem/feathers-blob) which provides a store abstraction, `feathers-s3` is limited to
-be used with the stores that provide an S3 compatible API. However, it takes advantage of the **S3 API** by using [presigned URLs](https://docs.aws.amazon.com/AmazonS3/latest/userguide/using-presigned-url.html) to manage (uplaod, share) objects on a store.
+Unlike the solution [feathers-blob](https://github.com/feathersjs-ecosystem/feathers-blob), which provides a store abstraction, `feathers-s3` is limited to
+be used with stores providing a S3 compatible API. However, it takes advantage of the **S3 API** by using [presigned URLs](https://docs.aws.amazon.com/AmazonS3/latest/userguide/using-presigned-url.html) to manage (upload, share) objects on a store in a more reliable and secure way.
 
 Using **Presigned URL** has different pros and cons:
 
@@ -17,17 +17,18 @@ Using **Presigned URL** has different pros and cons:
   - It decreases the necessary resources of the server because the transfer process is established between the client and the S3 service.
   - It speeds up the transfer process because it can be easily parallelized.
   - It reduces the risk of your server becoming a bottleneck.
+  - It supports multipart upload by design.
   - It is inherently secure.
 * Cons
   - It involves extra complexity on the client side.
-  - It requires your S3 bucket has CORS enabled.
-  - It requires your provider support S3 Signature Version 4.
-  - It constrains the access to the object for a short time.
+  - It requires your S3 bucket to have CORS enabled.
+  - It requires your provider to support S3 Signature Version 4.
+  - The access to the object is limited to a short time.
 
 To address these drawbacks, `feathers-s3` provides:
-* **Helper functions** to ease the use of the library from a client application.
-* An [Express middleware](http://expressjs.com/en/guide/using-middleware.html) useful to get objects without **presignedl url**. It let you access the object without any time constraint that come with the use of **presigned url** or access portion of an object using [range request](https://developer.mozilla.org/en-US/docs/Web/HTTP/Range_requests).
-* A **proxy** mode that let you use **service methods** that don't rely on **presigned URL** in case your S3 provider doesn't support CORS settings.
+* **Helper functions** to simplify usage from a client application.
+* An [Express middleware](http://expressjs.com/en/guide/using-middleware.html) to directly access objects based on URLs without using **presignedl url**. There is no time constraint unlike with **presigned url** and you can also access only a portion of an object using [range requests](https://developer.mozilla.org/en-US/docs/Web/HTTP/Range_requests).
+* A **proxy** mode that let you use **service methods** that don't rely on **presigned URL** in case your S3 provider doesn't support CORS settings. In this case the objects are always transferred through your backend.
 
 ## Principle
 
@@ -138,8 +139,8 @@ Create an instance of the service with the given options:
 |`s3Client` | the s3Client [configuration](https://docs.aws.amazon.com/AWSJavaScriptSDK/v3/latest/clients/client-s3/classes/s3client.html#config). | yes |
 | `bucket` |  the bucket to use. | yes |
 | `prefix` | an optional prefix to use when computing the final **Key** | no |
-| `btoa` | the binary to ascii function used to transform sent data into a string. Default is to transform from base64. | no |
-| `atob` | the ascii to binary function used to transform received data into a Buffer. Default is to transform from base64. | no |
+| `btoa` | the binary to ascii function used to transform sent data into a string. Default is to transform to base64. | no |
+| `atob` | the ascii to binary function used to transform received data into a Buffer. Default is to transform back from base64. | no |
 
 #### create (data, params)
 
@@ -164,6 +165,8 @@ Get an object from a bucket.
 | Parameter | Description |
 |---|---|
 | `id` |  the object key. Note that the final computed **Key** takes into account the `prefix` option of the service. |
+
+> The object will be entirely read and transferred to the client, for large files consider using presigned URLs instead.
 
 #### remove (id, params)
 
@@ -234,12 +237,41 @@ The payload `data` must contain the following properties:
 
 #### getObject (service)
 
-It expect a route path like `path/to/get/*` where the last parameter is the path to the object.
+It expect to be setup on a route path like `path/to/get/*` where the last parameter is the path to the object in the target bucket.
 It is associated with an S3 service to use the same configuration (s3client, bucket, etc...).
 
 | Argument | Description | Required |
 |---|---|---|
 | `service` | the service to be associated to this midlleware. | yes |
+
+```js
+// How to setup the route
+app.get('/s3-objects/*', getObject(service))
+// How to use it with any request agent like superagent
+const response = await superagent.get('your.domain.com/s3-objects/my-file.png')
+```
+
+You can also simply use the target object URL in your HTML: `<img src="your.domain.com/s3-objects/my-file.png">`.
+
+If you'd like to authenticate the route on your backend you will have to do something like this:
+```js
+import { authenticate } from '@feathersjs/express'
+
+app.get('/s3-objects/*', authenticate('jwt'), getObject(service))
+```
+
+In this case, if you need to reference the object by the URL it will require you to add the JWT as a query parameter like this: `<img src="your.domain.com/s3-objects/my-file.png&jwt=XXX">`. The JWT can then be extracted by a middleware:
+```js
+import { authenticate } from '@feathersjs/express'
+
+app.get('/s3-objects/*', (req, res, next) => {
+  req.feathers.authentication = {
+    strategy: 'jwt',
+    accessToken: req.query.jwt
+  }
+  next()
+}, authenticate('jwt'), getObject(service))
+```
 
 ### Client
 
@@ -259,7 +291,7 @@ The options are:
 | `transport` | the transport layer used by the **Feathers** client application. For now it is required. |
 | `servicePath` | the path to the service. | `s3` |
 | `chunkSize` | the size of the chunk to perfom multipart upload. | `5MB` |
-| `useProxy` | define whether to use proxies custom methods. | `false` |
+| `useProxy` | define whether to use backend as a proxy for custom methods. | `false` |
 | `btoa` | the binary to ascii function used to transform sent data into a string. | transform to base64 |
 | `atob` | the ascii to binary function used to transform received data into a Buffer. | transform from base64 |
 
