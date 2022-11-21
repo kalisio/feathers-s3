@@ -111,7 +111,11 @@ const s3ClientService = getClientService(clientApp, { transport })
 const content = fs.readFileSync('path/to/the/image.png')
 const blob = new Blob([content], { type: 'image/png' })
 // Upload a file to the to the bucket using the key path/to/my/object
-await s3ClientService.upload('path/to/my/object', blob, { expiresIn: 30 })
+try {
+  await s3ClientService.upload('path/to/my/object', blob, { expiresIn: 30 })
+} catch (error) {
+  console.error(error)
+}
 ```
 
 To have a more complex use case, please have a look at the [tests](./test).
