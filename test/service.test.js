@@ -87,6 +87,11 @@ describe('feathers-s3-service', () => {
     expect(response.VersionId).toExist()
     expect(response.Location).toExist()
   })
+  it ('list uploaded files', async () => {
+    const response = await service.find()
+    expect(response.Contents.length).to.equal(1)
+    expect(response.Contents[0].Key).to.equal(options.prefix + '/' + fileId)
+  })
   it('download file with middleware', async () => {
     const response = await superagent
       .get(`http://localhost:3333/s3-objects/${fileId}`)

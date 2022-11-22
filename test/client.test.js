@@ -84,6 +84,10 @@ function runTests (message) {
     const response = await s3ClientService.upload(featuresFileId, blob, { expiresIn: 30 })
     expect(response.ETag).toExist()
   })
+  if ('list uploaded files', async () => {
+    const response = await s3ClientService.find()
+    expect(response.Contents.length).to.equal(4)
+  })
   it('download text file' + message, async () => {
     const response = await s3ClientService.download(textFileId, { expiresIn: 30 })
     expect(response.type).to.equal('text/plain')
