@@ -56,7 +56,15 @@ let useProxy = false
 
 function runTests (message) {
   it('create s3 service' + message, () => {
-    s3ClientService = getClientService(clientApp, { servicePath: 's3', transport, useProxy, atob, btoa, fetch, debug: debugClient })
+    s3ClientService = getClientService(clientApp, { 
+      servicePath: 's3', 
+      transport, 
+      useProxy, 
+      atob, 
+      btoa, 
+      fetch, 
+      debug: debugClient 
+    })
     // Change proxy mode for next tests
     useProxy = !useProxy
     expect(s3ClientService).toExist()
