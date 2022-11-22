@@ -142,9 +142,13 @@ Create an instance of the service with the given options:
 | `btoa` | the binary to ascii function used to transform sent data into a string. Default is to transform to base64. | no |
 | `atob` | the ascii to binary function used to transform received data into a Buffer. Default is to transform back from base64. | no |
 
+#### find (params)
+
+Lists some objects in a bucket according given criteria. See 
+
 #### create (data, params)
 
-Generate a presigned URL for the following commands:
+Generates a presigned URL for the following commands:
 * [PutObjectCommand](https://docs.aws.amazon.com/AWSJavaScriptSDK/v3/latest/clients/client-s3/classes/putobjectcommand.html)
 * [GetObjectCommand](https://docs.aws.amazon.com/AWSJavaScriptSDK/v3/latest/clients/client-s3/classes/getobjectcommand.html)
 * [UploadPartCommnad](https://docs.aws.amazon.com/AWSJavaScriptSDK/v3/latest/clients/client-s3/classes/uploadpartcommand.html)
@@ -155,8 +159,8 @@ The payload `data` must contain the following properties:
 |---|---|
 | `command` | the command for which the presigned URL should be created. The possible values are `GetObject`, `PutObject` and `UploadPart`. |
 | `id` |  the object key. Note that the final computed **Key** takes into account the `prefix` option of the service. |
-| `{u\|U}ploadId` | the **UploadId** generated when calling the [createMultipartUpload](#createmultipartupload-data-params) method. It is required if the command is `UploadPart` |
-| `{p\|P}artNumber` | the **PartNumber** of the part to be uploaded. It is required  if the command is `UploadPart` |
+| `UploadId` | the **UploadId** generated when calling the [createMultipartUpload](#createmultipartupload-data-params) method. It is required if the command is `UploadPart` |
+| `PartNumber` | the **PartNumber** of the part to be uploaded. It is required  if the command is `UploadPart` |
 
 #### get (id, params)
 
@@ -202,7 +206,7 @@ The payload `data` must contain the following properties:
 | Property | Description |
 |---|---|
 | `id` |  the object key. Note that the final computed **Key** takes into account the `prefix` option of the service. |
-| `{u\|U}ploadId` | the **UploadId** generated when calling the [createMultipartUpload](#createmultipartupload-data-params) method. |
+| `UploadId` | the **UploadId** generated when calling the [createMultipartUpload](#createmultipartupload-data-params) method. |
 | `parts` | the uploaded parts. It consists in an array of objects following the schema: `{ PartNumber: <number>, ETag: <etag> )}`. |
 
 Any optional properties are forwarded to the underlying `CompleteMultipartUploadCommand` command parameters.
@@ -216,8 +220,8 @@ The payload `data` must contain the following properties:
 | Property | Description |
 |---|---|
 | `id` |  the object key. Note that the final computed **Key** takes into account the `prefix` option of the service. |
-| `{u\|U}ploadId` | the **UploadId** generated when calling the [createMultipartUpload](#createmultipartupload-data-params) method. |
-| `{p\|P}artNumber` | the part number. |
+| `UploadId` | the **UploadId** generated when calling the [createMultipartUpload](#createmultipartupload-data-params) method. |
+| `PartNumber` | the part number. |
 | `buffer` | the content to be uploaded. |
 | `type` | the content type to be uploaded. |
 
@@ -292,8 +296,10 @@ The options are:
 | `servicePath` | the path to the service. | `s3` |
 | `chunkSize` | the size of the chunk to perfom multipart upload. | `5MB` |
 | `useProxy` | define whether to use backend as a proxy for custom methods. | `false` |
+| `fetch` | the fetch function. | browser fetch function |
 | `btoa` | the binary to ascii function used to transform sent data into a string. | transform to base64 |
 | `atob` | the ascii to binary function used to transform received data into a Buffer. | transform from base64 |
+| `debug` | the debug function. | null |
 
 #### upload (id, blob, options)
 

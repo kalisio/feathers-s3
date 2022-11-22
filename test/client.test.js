@@ -1,4 +1,4 @@
-import makeDebug from 'debug'
+import createDebug from 'debug'
 import chai, { util, expect } from 'chai'
 import chailint from 'chai-lint'
 import superagent from 'superagent'
@@ -10,11 +10,14 @@ import io from 'socket.io-client'
 import { Service, getClientService } from '../lib/index.js'
 import fs from 'fs'
 import { Blob } from 'buffer'
+import fetch from 'node-fetch'
 
 const { rest } = express
 
-feathers.setDebug(makeDebug)
-feathersClient.setDebug(makeDebug)
+feathers.setDebug(createDebug)
+feathersClient.setDebug(createDebug)
+
+const debugClient = createDebug('feathers-s3:client')
 
 let serverApp, expressServer, socket, transport, clientApp, s3Service, s3ClientService
 
@@ -53,7 +56,7 @@ let useProxy = false
 
 function runTests (message) {
   it('create s3 service' + message, () => {
-    s3ClientService = getClientService(clientApp, { servicePath: 's3', transport, useProxy, atob, btoa })
+    s3ClientService = getClientService(clientApp, { servicePath: 's3', transport, useProxy, atob, btoa, fetch, debug: debugClient })
     // Change proxy mode for next tests
     useProxy = !useProxy
     expect(s3ClientService).toExist()

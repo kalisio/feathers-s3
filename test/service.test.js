@@ -61,8 +61,8 @@ describe('feathers-s3-service', () => {
       id: fileId,
       buffer: await blob.slice(0, chunkSize).arrayBuffer(),
       type: blob.type,
-      partNumber: 1,
-      uploadId
+      PartNumber: 1,
+      UploadId: uploadId
     }, { expiresIn: 30 })
     expect(response.id).to.equal(fileId)
     expect(response.ETag).toExist()
@@ -73,8 +73,8 @@ describe('feathers-s3-service', () => {
       id: fileId,
       buffer: await blob.slice(chunkSize, blob.size).arrayBuffer(),
       type: blob.type,
-      partNumber: 2,
-      uploadId
+      PartNumber: 2,
+      UploadId: uploadId
     }, { expiresIn: 30 })
     expect(response.id).to.equal(fileId)
     expect(response.ETag).toExist()
@@ -83,7 +83,7 @@ describe('feathers-s3-service', () => {
   it('completeMultipartUpload', async () => {
     const response = await service.completeMultipartUpload({
       id: fileId,
-      uploadId,
+      UploadId: uploadId,
       parts
     })
     expect(response.id).to.equal(fileId)
