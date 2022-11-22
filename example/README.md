@@ -11,7 +11,8 @@
 2. Start the server
 
 ```js
-node ./example/app.mjs
+cd example
+node ./app.mjs
 ```
 
 By default, the server is listening on port `3333`.
