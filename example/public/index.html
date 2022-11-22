@@ -27,8 +27,6 @@
       // Configure and get the s3 service
       const s3Service = getClientService(app, { 
         transport, 
-        atob: window.atob.bind(window),
-        btoa: window.btoa.bind(window),
         fetch: window.fetch.bind(window),
         useProxy: true
       })

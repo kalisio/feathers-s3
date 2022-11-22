@@ -45,13 +45,6 @@ const imageFileContent = fs.readFileSync('test/data/image.png')
 const archiveFileContent = fs.readFileSync('test/data/archive.zip')
 const featuresFileContent = fs.readFileSync('test/data/features.geojson')
 
-function atob (data) {
-  return Buffer.from(data, 'base64')
-}
-function btoa (data) {
-  return Buffer.from(data).toString('base64')
-}
-
 let useProxy = false
 
 function runTests (message) {
@@ -60,8 +53,6 @@ function runTests (message) {
       servicePath: 's3',
       transport,
       useProxy,
-      atob,
-      btoa,
       fetch,
       debug: debugClient
     })
@@ -103,25 +94,25 @@ function runTests (message) {
     const response = await s3ClientService.download(textFileId, { expiresIn: 30 })
     expect(response.type).to.equal('text/plain')
     expect(response.buffer).toExist()
-    expect(atob(response.buffer).toString()).to.equal(textFileContent.toString())
+    expect(Buffer.from(response.buffer).toString()).to.equal(textFileContent.toString())
   })
   it('download image file' + message, async () => {
     const response = await s3ClientService.download(imageFileId, { expiresIn: 30 })
     expect(response.type).to.equal('image/png')
     expect(response.buffer).toExist()
-    expect(atob(response.buffer).toString()).to.equal(imageFileContent.toString())
+    expect(Buffer.from(response.buffer).toString()).to.equal(imageFileContent.toString())
   })
   it('download zip file' + message, async () => {
     const response = await s3ClientService.download(archiveFileId, { expiresIn: 30 })
     expect(response.type).to.equal('application/zip')
     expect(response.buffer).toExist()
-    expect(atob(response.buffer).toString()).to.equal(archiveFileContent.toString())
+    expect(Buffer.from(response.buffer).toString()).to.equal(archiveFileContent.toString())
   })
   it('download features file' + message, async () => {
     const response = await s3ClientService.download(featuresFileId, { expiresIn: 30 })
     expect(response.type).to.equal('application/geo+json')
     expect(response.buffer).toExist()
-    expect(atob(response.buffer).toString()).to.equal(featuresFileContent.toString())
+    expect(Buffer.from(response.buffer).toString()).to.equal(featuresFileContent.toString())
   })
   it('delete text file' + message, async () => {
     const response = await s3ClientService.remove(textFileId)
