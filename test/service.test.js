@@ -91,7 +91,7 @@ describe('feathers-s3-service', () => {
     expect(response.VersionId).toExist()
     expect(response.Location).toExist()
   })
-  it ('list uploaded files', async () => {
+  it('list uploaded files', async () => {
     const response = await service.find()
     expect(response.Contents.length).to.equal(1)
     expect(response.Contents[0].Key).to.equal(options.prefix + '/' + fileId)

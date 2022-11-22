@@ -84,7 +84,7 @@ function runTests (message) {
     const response = await s3ClientService.upload(featuresFileId, blob, { expiresIn: 30 })
     expect(response.ETag).toExist()
   })
-  if ('list uploaded files', async () => {
+  it('list uploaded files', async () => {
     const response = await s3ClientService.find()
     expect(response.Contents.length).to.equal(4)
   })
@@ -143,7 +143,7 @@ describe('feathers-s3-client', () => {
   })
   it('create s3 service', () => {
     serverApp.use('s3', new Service(options), {
-      methods: ['create', 'get', 'remove', 'createMultipartUpload', 'completeMultipartUpload', 'uploadPart', 'putObject']
+      methods: ['create', 'get', 'find', 'remove', 'createMultipartUpload', 'completeMultipartUpload', 'uploadPart', 'putObject']
     })
     s3Service = serverApp.service('s3')
     expect(s3Service).toExist()
