@@ -52,6 +52,7 @@ describe('feathers-s3-service', () => {
   })
   it('createMultipartUpload', async () => {
     const response = await service.createMultipartUpload({ id: fileId, type: blob.type })
+    expect(response.id).to.equal(fileId)
     expect(response.UploadId).toExist()
     uploadId = response.UploadId
   })
@@ -63,6 +64,7 @@ describe('feathers-s3-service', () => {
       partNumber: 1,
       uploadId
     }, { expiresIn: 30 })
+    expect(response.id).to.equal(fileId)
     expect(response.ETag).toExist()
     parts.push({ PartNumber: 1, ETag: response.ETag })
   })
@@ -74,6 +76,7 @@ describe('feathers-s3-service', () => {
       partNumber: 2,
       uploadId
     }, { expiresIn: 30 })
+    expect(response.id).to.equal(fileId)
     expect(response.ETag).toExist()
     parts.push({ PartNumber: 2, ETag: response.ETag })
   })
@@ -83,6 +86,7 @@ describe('feathers-s3-service', () => {
       uploadId,
       parts
     })
+    expect(response.id).to.equal(fileId)
     expect(response.ETag).toExist()
     expect(response.VersionId).toExist()
     expect(response.Location).toExist()
@@ -99,6 +103,7 @@ describe('feathers-s3-service', () => {
   })
   it('download file with service method', async () => {
     const response = await service.get(fileId)
+    expect(response.id).to.equal(fileId)
     expect(response.buffer).toExist()
     expect(response.type).to.equal('application/geo+json')
     const buffer = service.atob(response.buffer)
@@ -106,6 +111,7 @@ describe('feathers-s3-service', () => {
   })
   it('remove uploaded file', async () => {
     const response = await service.remove(fileId)
+    expect(response.id).to.equal(fileId)
     expect(response.$metadata.httpStatusCode).to.equal(204)
   })
   after(async () => {
