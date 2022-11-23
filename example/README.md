@@ -15,6 +15,6 @@ cd example
 node ./app.mjs
 ```
 
-By default, the server is listening on port `3333`.
+_By default, the server is listening on port `3333`. You can change it by settting the environment variable `PORT` to the desired value._
 
 3. Connect to `localhost:3333`

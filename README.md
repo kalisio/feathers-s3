@@ -68,6 +68,9 @@ yarn add @kalisio/feathers-s3
 
 The provided [example](./example/README.md) illustrates how to setup:
 * a [server app](./example/app.mjs)
+
+https://github.com/kalisio/feathers-s3/blob/fa8adde8181ccad740ed7fcfb92af1a5c43f9281/example/app.mjs#L1
+
 * a [browser client app](./example/public/index.html).
 
 _You can also have a look at the [tests](./test) in order to have different use cases of the library_.
