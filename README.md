@@ -64,7 +64,7 @@ or
 yarn add @kalisio/feathers-s3
 ```
 
-### Examples
+### Example
 
 The provided [example](./example/README.md) illustrates how to setup:
 
