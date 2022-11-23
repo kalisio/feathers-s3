@@ -64,62 +64,13 @@ or
 yarn add @kalisio/feathers-s3
 ```
 
-### Example
+### Examples
 
-This basic example illustrates how to use the `feathers-s3`:
+The provided [example](./example/README.md) illustrates how to setup:
+* a [server app](./example/app.mjs)
+* a [browser client app](./example/public/index.html).
 
-#### Server side
-
-```js
-import feathers from '@feathersjs/feathers'
-import socketio from '@feathersjs/socketio'
-import { Service } from '@kalisio/feathers-s3'
-
-// Create the server app
-const serverApp = express(feathers())
-serverApp.configure(socketio({ maxHttpBufferSize: 1e8 }))   // ensure socketio can transport a chunck
-await serverApp.listen(3333)
-// Create the S3 service
-serverApp.use('s3', new Service({
-  s3Client: {
-    credentials: {
-      accessKeyId: 'XXXXXXXXXXX',
-      secretAccessKey: 'YYYYYYYYYY'
-    },
-    signatureVersion: 'v4'
-  },
-  bucket: 'my-bucket'
-}))
-```
-
-#### Client side
-
-```js
-import feathers from '@feathersjs/client'
-import socketio from '@feathersjs/socketio'
-import { getClientService } from '@kalisio/feathers-s3'
-import fs from 'fs'
-import { Blob } from 'buffer'
-
-// Create the client app
-const clientApp = feathers()
-socket = io('http://localhost:3333')
-transport = feathers.socketio(socket)
-clientApp.configure(transport)
-// Get the S3 service
-const s3ClientService = getClientService(clientApp, { transport })
-// Create a blob with the object to be uploaded
-const content = fs.readFileSync('path/to/the/image.png')
-const blob = new Blob([content], { type: 'image/png' })
-// Upload a file to the to the bucket using the key path/to/my/object
-try {
-  await s3ClientService.upload('path/to/my/object', blob, { expiresIn: 30 })
-} catch (error) {
-  console.error(error)
-}
-```
-
-To have a more complex use case, please have a look at the [tests](./test).
+_You can also have a look at the [tests](./test) in order to have different use cases of the library_.
 
 ## API
 

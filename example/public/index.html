@@ -7,8 +7,8 @@
   <body>
     <main id="main" class="container">
       <h1>Welcome to feathers-s3</h1>
-      <input type="file" id="file" />
-      <button id="upload" onclick="uploadFile()">Upload file</button>
+      <input id="file" type="file" />
+      <button id="upload" onclick="uploadFile()" disabled>Upload file</button>
       <button id="download" onclick="downloadFile()" disabled>Download file</button>
     </main>
 
@@ -30,15 +30,23 @@
         useProxy: true
       })
       
+      // listen to the file input in order to disable/enable the buttons
+      document.getElementById('file').addEventListener('input', (evt) => {
+        const files = document.getElementById('file').files
+        if (files.Length > 0) document.getElementById('upload').disabled = true
+        else document.getElementById('upload').disabled = false
+        document.getElementById('download').disabled = true
+      })
+
       // Upload file
       window.uploadFile = async () => {
         const files = document.getElementById('file').files
         if (files.length === 0) return
         try {
+          // upload the selected file
           const file = files[0]
           const response = await s3Service.upload(file.name, file)
-          console.log(response)
-          document.querySelector('#download').disabled = false
+          document.getElementById('download').disabled = false
         } catch (error) {
           console.error(error)
         }
@@ -47,9 +55,10 @@
       // Download file
       window.downloadFile = async () => {
         try {
+          // download the selected file
           const file = document.getElementById('file').files[0]
           const response = await s3Service.download(file.name)
-          console.log(response)         
+          // setup an anchor to download the file from the browser
           const anchor = document.createElement('a')
           anchor.href = URL.createObjectURL(new Blob([ response.buffer ], { type: response.type }))
           anchor.download = file.name

@@ -15,7 +15,10 @@ app.use('/', express.static('./public'))
 // Serve feathers-s3
 app.use('/feathers-s3', express.static('../lib'))
 // Configure Socket.io
-app.configure(socketio({ cors: { origin: '*' } }))
+app.configure(socketio({ 
+  cors: { origin: '*' },
+  maxHttpBufferSize: 1e8
+}))
 // Define the options used to instanciate the S3 service
 const options = {
   s3Client: {
@@ -28,7 +31,7 @@ const options = {
     signatureVersion: 'v4'
   },
   bucket: process.env.S3_BUCKET,
-  prefix: 'feathers-s3'
+  prefix: 'feathers-s3-example'
 }
 // Register the message service on the Feathers application
 // /!\ do not forget to declare the custom methods
