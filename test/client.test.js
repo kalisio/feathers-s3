@@ -32,7 +32,7 @@ const options = {
     signatureVersion: 'v4'
   },
   bucket: process.env.S3_BUCKET,
-  prefix: 'feathers-s3'
+  prefix: 'feathers-s3-client'
 }
 
 const textFileId = 'text.txt'
