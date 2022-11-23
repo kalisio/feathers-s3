@@ -75,7 +75,7 @@ _You can also have a look at the [tests](./test) in order to have different use 
 ## API
 
 `feathers-s3` consists of three parts:
-* [Service](#service) that pvoides basic methods for using **S3** API.
+* [Service](#service) that provides basic methods for using **S3** API.
 * [Middlewares](#middlewares) that provides an [Express middleware](http://expressjs.com/en/guide/using-middleware.html) to access an object from the store.
 * [Client](#client) that provides helper functions to simplify the `upload` and `download` logic for the client side.
 
@@ -217,7 +217,7 @@ import { authenticate } from '@feathersjs/express'
 app.get('/s3-objects/*', authenticate('jwt'), getObject(service))
 ```
 
-In this case, if you need to reference the object by the URL it will require you to add the JWT as a query parameter like this: `<img src="your.domain.com/s3-objects/my-file.png&jwt=XXX">`. The JWT can then be extracted by a middleware:
+In this case, if you need to reference the object by the URL it will require you to add the JWT as a query parameter like this: `<img src="your.domain.com/s3-objects/my-file.png?jwt=XXX">`. The JWT can then be extracted by a middleware:
 ```js
 import { authenticate } from '@feathersjs/express'
 
