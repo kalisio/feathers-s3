@@ -7,10 +7,9 @@
   <body>
     <main id="main" class="container">
       <h1>Welcome to feathers-s3</h1>
-      <form class="form" onsubmit="uploadFile(event.preventDefault())">
-        <input type="file" id="file" />
-        <button type="submit" class="button button-primary">Upload file</button>
-      </form>
+      <input type="file" id="file" />
+      <button id="upload" onclick="uploadFile()">Upload file</button>
+      <button id="download" onclick="downloadFile()" disabled>Download file</button>
     </main>
 
     <script src="https://unpkg.com/@feathersjs/client@^5.0.0-pre.28/dist/feathers.js"></script>
@@ -31,12 +30,32 @@
         useProxy: true
       })
       
-      // Form submission handler that sends a new message
+      // Upload file
       window.uploadFile = async () => {
+        const files = document.getElementById('file').files
+        if (files.length === 0) return
         try {
-          const file = document.getElementById('file').files[0]
+          const file = files[0]
           const response = await s3Service.upload(file.name, file)
           console.log(response)
+          document.querySelector('#download').disabled = false
+        } catch (error) {
+          console.error(error)
+        }
+      }
+
+      // Download file
+      window.downloadFile = async () => {
+        try {
+          const file = document.getElementById('file').files[0]
+          const response = await s3Service.download(file.name)
+          console.log(response)         
+          const anchor = document.createElement('a')
+          anchor.href = URL.createObjectURL(new Blob([ response.buffer ], { type: response.type }))
+          anchor.download = file.name
+          document.body.appendChild(anchor)
+          console.log(anchor)
+          anchor.click()
         } catch (error) {
           console.error(error)
         }
