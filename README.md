@@ -95,7 +95,9 @@ Create an instance of the service with the given options:
 
 #### find (params)
 
-Lists some objects in a bucket according given criteria. See 
+Lists some objects in a bucket according given criteria provided in the `params.query` object.
+
+Check the [ListObjectsCommandInput](https://docs.aws.amazon.com/AWSJavaScriptSDK/v3/latest/clients/client-s3/interfaces/listobjectscommandinput.html) documentation to have the list of supported poperties.
 
 #### create (data, params)
 
