@@ -70,11 +70,11 @@ The provided [example](./example/README.md) illustrates how to setup:
 
 * a server app
 
-https://github.com/kalisio/feathers-s3/blob/fa8adde8181ccad740ed7fcfb92af1a5c43f9281/example/app.mjs#L1-L100
+https://github.com/kalisio/feathers-s3/blob/fa8adde8181ccad740ed7fcfb92af1a5c43f9281/example/app.mjs#L1-L44
 
 * a browser client app
 
-https://github.com/kalisio/feathers-s3/blob/184802600263e62b4d8d910d8781cbf3b7b03966/example/public/index.html#L1-L100
+https://github.com/kalisio/feathers-s3/blob/184802600263e62b4d8d910d8781cbf3b7b03966/example/public/index.html#L1-L74
 
 _You can also have a look at the [tests](./test) in order to have different use cases of the library_.
 
