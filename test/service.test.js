@@ -44,19 +44,30 @@ describe('feathers-s3-service', () => {
     expect(typeof Service).to.equal('function')
   })
   it('create the service', async () => {
-    app.use('s3', new Service(options))
+    app.use('s3', new Service(options), {
+      methods: ['create', 'get', 'find', 'remove', 'createMultipartUpload', 'completeMultipartUpload', 'uploadPart', 'putObject']
+    })
     service = app.service('s3')
     expect(service).toExist()
     app.get('/s3-objects/*', getObject(service))
     expressServer = await app.listen(3333)
   })
   it('createMultipartUpload', async () => {
+    let eventReceived = false
+    service.once('multipart-upload-created', (data) => {
+      if (data.id === fileId) eventReceived = true
+    })
     const response = await service.createMultipartUpload({ id: fileId, type: blob.type })
     expect(response.id).to.equal(fileId)
     expect(response.UploadId).toExist()
     uploadId = response.UploadId
+    expect(eventReceived).beTrue()
   })
   it('uploadPart 1', async () => {
+    let eventReceived = false
+    service.once('part-uploaded', (data) => {
+      if (data.id === fileId) eventReceived = true
+    })
     const response = await service.uploadPart({
       id: fileId,
       buffer: await blob.slice(0, chunkSize).arrayBuffer(),
@@ -67,8 +78,13 @@ describe('feathers-s3-service', () => {
     expect(response.id).to.equal(fileId)
     expect(response.ETag).toExist()
     parts.push({ PartNumber: 1, ETag: response.ETag })
+    expect(eventReceived).beTrue()
   })
   it('uploadPart 2', async () => {
+    let eventReceived = false
+    service.once('part-uploaded', (data) => {
+      if (data.id === fileId) eventReceived = true
+    })
     const response = await service.uploadPart({
       id: fileId,
       buffer: await blob.slice(chunkSize, blob.size).arrayBuffer(),
@@ -79,8 +95,13 @@ describe('feathers-s3-service', () => {
     expect(response.id).to.equal(fileId)
     expect(response.ETag).toExist()
     parts.push({ PartNumber: 2, ETag: response.ETag })
+    expect(eventReceived).beTrue()
   })
   it('completeMultipartUpload', async () => {
+    let eventReceived = false
+    service.once('multipart-upload-completed', (data) => {
+      if (data.id === fileId) eventReceived = true
+    })
     const response = await service.completeMultipartUpload({
       id: fileId,
       UploadId: uploadId,
@@ -90,6 +111,7 @@ describe('feathers-s3-service', () => {
     expect(response.ETag).toExist()
     expect(response.VersionId).toExist()
     expect(response.Location).toExist()
+    expect(eventReceived).beTrue()
   })
   it('list uploaded files', async () => {
     const response = await service.find()

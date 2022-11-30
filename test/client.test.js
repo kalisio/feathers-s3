@@ -47,7 +47,7 @@ const featuresFileContent = fs.readFileSync('test/data/features.geojson')
 
 let useProxy = false
 
-function runTests (message) {
+function runTests (message, checkEvents) {
   it('create s3 service' + message, () => {
     s3ClientService = getClientService(clientApp, {
       servicePath: 's3',
@@ -56,8 +56,6 @@ function runTests (message) {
       fetch,
       debug: debugClient
     })
-    // Change proxy mode for next tests
-    useProxy = !useProxy
     expect(s3ClientService).toExist()
     expect(s3ClientService.createMultipartUpload).toExist()
     expect(s3ClientService.completeMultipartUpload).toExist()
@@ -68,23 +66,56 @@ function runTests (message) {
   })
   it('upload text file' + message, async () => {
     const blob = new Blob([textFileContent], { type: 'text/plain' })
+    let eventReceived = false
+    if (checkEvents) s3ClientService.once(useProxy ? 'object-put' : 'created', (data) => {
+      if (data.id === textFileId) eventReceived = true
+    })
     const response = await s3ClientService.upload(textFileId, blob, { expiresIn: 30 })
     expect(response.ETag).toExist()
+    if (checkEvents) expect(eventReceived).beTrue()
   })
   it('upload image file' + message, async () => {
     const blob = new Blob([imageFileContent], { type: 'image/png' })
+    let eventReceived = false
+    if (checkEvents) s3ClientService.once(useProxy ? 'object-put' : 'created', (data) => {
+      if (data.id === imageFileId) eventReceived = true
+    })
     const response = await s3ClientService.upload(imageFileId, blob, { expiresIn: 30 })
     expect(response.ETag).toExist()
+    if (checkEvents) expect(eventReceived).beTrue()
   })
   it('upload zip file' + message, async () => {
     const blob = new Blob([archiveFileContent], { type: 'application/zip' })
+    let eventReceived = false
+    if (checkEvents) s3ClientService.once(useProxy ? 'object-put' : 'created', (data) => {
+      if (data.id === archiveFileId) eventReceived = true
+    })
     const response = await s3ClientService.upload(archiveFileId, blob, { expiresIn: 30 })
     expect(response.ETag).toExist()
+    if (checkEvents) expect(eventReceived).beTrue()
   })
   it('upload features file' + message, async () => {
     const blob = new Blob([featuresFileContent], { type: 'application/geo+json' })
+    let eventsReceived = 0
+    if (checkEvents) {
+      s3ClientService.once('multipart-upload-created', (data) => {
+        if (data.id === featuresFileId) eventsReceived++
+      })
+      s3ClientService.once(useProxy ? 'part-uploaded' : 'created', (data) => {
+        if (data.id === featuresFileId) {
+          eventsReceived++
+          s3ClientService.once(useProxy ? 'part-uploaded' : 'created', (data) => {
+            if (data.id === featuresFileId) eventsReceived++
+          })
+        }
+      })
+      s3ClientService.once('multipart-upload-completed', (data) => {
+        if (data.id === featuresFileId) eventsReceived++
+      })
+    }
     const response = await s3ClientService.upload(featuresFileId, blob, { expiresIn: 30 })
     expect(response.ETag).toExist()
+    if (checkEvents) expect(eventsReceived).to.equal(4)
   })
   it('list uploaded files', async () => {
     const response = await s3ClientService.find()
@@ -126,6 +157,9 @@ function runTests (message) {
     const response = await s3ClientService.remove(archiveFileId)
     expect(response.$metadata.httpStatusCode).to.equal(204)
   })
+  it('change proxy mode', () => {
+    useProxy = !useProxy
+  })
 }
 
 describe('feathers-s3-client', () => {
@@ -145,8 +179,12 @@ describe('feathers-s3-client', () => {
   })
   it('create s3 service', () => {
     serverApp.use('s3', new Service(options), {
-      methods: ['create', 'get', 'find', 'remove', 'createMultipartUpload', 'completeMultipartUpload', 'uploadPart', 'putObject']
+      methods: ['create', 'get', 'find', 'remove', 'createMultipartUpload', 'completeMultipartUpload', 'uploadPart', 'putObject'],
+      events: ['multipart-upload-created', 'multipart-upload-completed', 'part-uploaded', 'object-put']
     })
+    // Setup a channel to publish all events
+    serverApp.on('connection', connection => serverApp.channel('anonymous').join(connection))
+    serverApp.publish((data, context) => serverApp.channel('anonymous'))
     s3Service = serverApp.service('s3')
     expect(s3Service).toExist()
   })
@@ -155,16 +193,16 @@ describe('feathers-s3-client', () => {
     transport = feathersClient.rest('http://localhost:3333').superagent(superagent)
     clientApp.configure(transport)
   })
-  runTests(' with REST client and without proxy')
-  runTests(' with REST client and with proxy')
+  runTests(' with REST client and without proxy', false)
+  runTests(' with REST client and with proxy', false)
   it('create websocket client', () => {
     clientApp = feathersClient()
     socket = io('http://localhost:3333')
     transport = feathersClient.socketio(socket)
     clientApp.configure(transport)
   })
-  runTests(' with websocket client and without proxy')
-  runTests(' with websocket client and with proxy')
+  runTests(' with websocket client and without proxy', true)
+  runTests(' with websocket client and with proxy', true)
   after(async () => {
     await expressServer.close()
   })
