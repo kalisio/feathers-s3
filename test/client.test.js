@@ -67,9 +67,11 @@ function runTests (message, checkEvents) {
   it('upload text file' + message, async () => {
     const blob = new Blob([textFileContent], { type: 'text/plain' })
     let eventReceived = false
-    if (checkEvents) s3ClientService.once(useProxy ? 'object-put' : 'created', (data) => {
-      if (data.id === textFileId) eventReceived = true
-    })
+    if (checkEvents) {
+      s3ClientService.once(useProxy ? 'object-put' : 'created', (data) => {
+        if (data.id === textFileId) eventReceived = true
+      })
+    }
     const response = await s3ClientService.upload(textFileId, blob, { expiresIn: 30 })
     expect(response.ETag).toExist()
     if (checkEvents) expect(eventReceived).beTrue()
@@ -77,9 +79,11 @@ function runTests (message, checkEvents) {
   it('upload image file' + message, async () => {
     const blob = new Blob([imageFileContent], { type: 'image/png' })
     let eventReceived = false
-    if (checkEvents) s3ClientService.once(useProxy ? 'object-put' : 'created', (data) => {
-      if (data.id === imageFileId) eventReceived = true
-    })
+    if (checkEvents) {
+      s3ClientService.once(useProxy ? 'object-put' : 'created', (data) => {
+        if (data.id === imageFileId) eventReceived = true
+      })
+    }
     const response = await s3ClientService.upload(imageFileId, blob, { expiresIn: 30 })
     expect(response.ETag).toExist()
     if (checkEvents) expect(eventReceived).beTrue()
@@ -87,9 +91,11 @@ function runTests (message, checkEvents) {
   it('upload zip file' + message, async () => {
     const blob = new Blob([archiveFileContent], { type: 'application/zip' })
     let eventReceived = false
-    if (checkEvents) s3ClientService.once(useProxy ? 'object-put' : 'created', (data) => {
-      if (data.id === archiveFileId) eventReceived = true
-    })
+    if (checkEvents) {
+      s3ClientService.once(useProxy ? 'object-put' : 'created', (data) => {
+        if (data.id === archiveFileId) eventReceived = true
+      })
+    }
     const response = await s3ClientService.upload(archiveFileId, blob, { expiresIn: 30 })
     expect(response.ETag).toExist()
     if (checkEvents) expect(eventReceived).beTrue()
@@ -119,7 +125,7 @@ function runTests (message, checkEvents) {
   })
   it('list uploaded files', async () => {
     const response = await s3ClientService.find()
-    expect(response.Contents.length).to.equal(4)
+    expect(response.length).to.equal(4)
   })
   it('download text file' + message, async () => {
     const response = await s3ClientService.download(textFileId, { expiresIn: 30 })

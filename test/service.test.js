@@ -115,8 +115,8 @@ describe('feathers-s3-service', () => {
   })
   it('list uploaded files', async () => {
     const response = await service.find()
-    expect(response.Contents.length).to.equal(1)
-    expect(response.Contents[0].Key).to.equal(options.prefix + '/' + fileId)
+    expect(response.length).to.equal(1)
+    expect(response[0].Key).to.equal(fileId)
   })
   it('download file with middleware', async () => {
     const response = await superagent
