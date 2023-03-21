@@ -63,7 +63,6 @@
           anchor.href = URL.createObjectURL(new Blob([ response.buffer ], { type: response.type }))
           anchor.download = file.name
           document.body.appendChild(anchor)
-          console.log(anchor)
           anchor.click()
         } catch (error) {
           console.error(error)
