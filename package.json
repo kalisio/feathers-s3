@@ -52,17 +52,17 @@
   "dependencies": {
     "@aws-sdk/client-s3": "^3.209.0",
     "@aws-sdk/s3-request-presigner": "^3.209.0",
-    "@feathersjs/commons": "^5.0.0-pre.28",
-    "@feathersjs/errors": "^5.0.0-pre.28",
+    "@feathersjs/commons": "^5.0.1",
+    "@feathersjs/errors": "^5.0.1",
     "debug": "^4.1.0",
     "lodash": "^4.17.21",
     "moment": "^2.29.4"
   },
   "devDependencies": {
-    "@feathersjs/client": "^5.0.0-pre.28",
-    "@feathersjs/express": "^5.0.0-pre.28",
-    "@feathersjs/feathers": "^5.0.0-pre.28",
-    "@feathersjs/socketio": "^5.0.0-pre.28",
+    "@feathersjs/client": "^5.0.1",
+    "@feathersjs/express": "^5.0.1",
+    "@feathersjs/feathers": "^5.0.1",
+    "@feathersjs/socketio": "^5.0.1",
     "c8": "^7.11.0",
     "chai": "^4.3.6",
     "chai-lint": "^0.1.1",
