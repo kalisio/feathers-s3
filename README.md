@@ -28,7 +28,7 @@ Using **Presigned URL** has different pros and cons:
 To address these drawbacks, `feathers-s3` provides:
 * **Helper functions** to simplify usage from a client application.
 * An [Express middleware](http://expressjs.com/en/guide/using-middleware.html) to directly access objects based on URLs without using **presignedl url**. There is no time constraint unlike with **presigned url** and you can also access only a portion of an object using [range requests](https://developer.mozilla.org/en-US/docs/Web/HTTP/Range_requests).
-* A **proxy** mode that let you use **service methods** that don't rely on **presigned URL** in case your S3 provider doesn't support CORS settings. In this case the objects are always transferred through your backend.
+* A **proxy** mode that let you use **service methods** that don't rely on **presigned URL** in case your S3 provider doesn't support CORS settings or you'd like to [process data](README.md#data-processing) on your backend. In this case the objects are always transferred through your backend.
 
 ## Principle
 
