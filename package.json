@@ -69,6 +69,7 @@
     "cross-env": "^7.0.3",
     "mocha": "^9.2.2",
     "node-fetch": "^3.2.10",
+    "sharp": "^0.32.0",
     "socket.io-client": "^4.5.3",
     "standard": "^17.0.0",
     "superagent": "^5.1.0"

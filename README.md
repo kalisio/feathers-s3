@@ -76,7 +76,33 @@ https://github.com/kalisio/feathers-s3/blob/fa8adde8181ccad740ed7fcfb92af1a5c43f
 
 https://github.com/kalisio/feathers-s3/blob/184802600263e62b4d8d910d8781cbf3b7b03966/example/public/index.html#L1-L74
 
-_You can also have a look at the [tests](./test) in order to have different use cases of the library_.
+_As a general rule you can also have a look at the [tests](./test) in order to have different use cases of the library_.
+
+### Data processing
+
+Some use cases might require you directly process the data on your server before sending it to the object storage, e.g. if you'd like to resize an image. You can do that by:
+1. registering a [before hook](https://feathersjs.com/api/hooks.html) on the `putObject` custom method to process the data before sending it to the object storage,
+2. using the [proxy mode](README.md#client) on the client side service to send the data to your server instead of the object storage,
+3. defining the appropriate [`chunkSize`](README.md#client) on the client service to not use multipart upload as processing usually requires the whole content to be sent.
+
+Here is a simple example relying on [sharp](https://sharp.pixelplumbing.com/) to resize an image:
+```js
+async function resizeImage (hook) {
+  hook.data.buffer = await sharp(hook.data.buffer)
+    .resize(128, 48, { fit: 'contain', background: '#00000000' }).toBuffer()
+}
+
+app.service('s3').hooks({
+  before: {
+    putObject: [resizeImage]
+  }
+})
+
+// Here you can proceed as usual from server side
+service.putObject({ id, buffer, type })
+// or client side
+clientService.upload(id, blob, options)
+```
 
 ## API
 
