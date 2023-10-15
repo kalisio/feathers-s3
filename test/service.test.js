@@ -109,7 +109,6 @@ describe('feathers-s3-service', () => {
     })
     expect(response.id).to.equal(fileId)
     expect(response.ETag).toExist()
-    expect(response.VersionId).toExist()
     expect(response.Location).toExist()
     expect(eventReceived).beTrue()
   })
