@@ -222,6 +222,22 @@ The payload `data` must contain the following properties:
 | `buffer` | the content to be uploaded. |
 | `type` | the content type to be uploaded. |
 
+#### uploadFile (data, params)
+
+Convenient method to upload a file.
+
+The payload `data` must contain the following properties:
+
+| Property | Description |
+|---|---|
+| `filePath` | the path to the file to be uploaded. The basename is used for computing the object key. |
+| `mimeType` | the content type of the file to be uploaded. |
+
+
+> NOTE
+>
+> You can also provide an `id` property to override the computed object key.
+
 ### Middlewares
 
 #### getObject (service)
