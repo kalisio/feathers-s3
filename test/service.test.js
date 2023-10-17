@@ -45,7 +45,7 @@ describe('feathers-s3-service', () => {
   })
   it('create the service', async () => {
     app.use('s3', new Service(options), {
-      methods: ['create', 'get', 'find', 'remove', 'createMultipartUpload', 'completeMultipartUpload', 'uploadPart', 'putObject']
+      methods: ['create', 'get', 'find', 'remove', 'createMultipartUpload', 'completeMultipartUpload', 'uploadPart', 'putObject', 'uploadFile']
     })
     service = app.service('s3')
     expect(service).toExist()
@@ -134,6 +134,30 @@ describe('feathers-s3-service', () => {
     const response = await service.remove(fileId)
     expect(response.id).to.equal(fileId)
     expect(response.$metadata.httpStatusCode).to.equal(204)
+  })
+  it('upload file', async () => {
+    const response = await service.uploadFile({ filePath: 'test/data/features.geojson', mimeType: 'application/geo+json' })
+    expect(response.id).to.equal(fileId)
+    expect(response.Key).to.equal('feathers-s3-test-service/features.geojson')
+    expect(response.ETag).toExist()
+  })
+  it('list uploaded files', async () => {
+    const response = await service.find()
+    expect(response.length).to.equal(1)
+    expect(response[0].Key).to.equal(fileId)
+  })
+  it('get signed url', async () => {
+    const response = await service.create({ id: fileId, command: 'GetObject' })
+    expect(response.SignedUrl).toExist()
+  })
+  it('remove uploaded file', async () => {
+    const response = await service.remove(fileId)
+    expect(response.id).to.equal(fileId)
+    expect(response.$metadata.httpStatusCode).to.equal(204)
+  })
+  it('check bucket destination is empty', async () => {
+    const response = await service.find()
+    expect(response.length).to.equal(0)
   })
   after(async () => {
     await expressServer.close()
