@@ -50,7 +50,7 @@ describe('feathers-s3-service', () => {
     app.use('s3', new Service(options), {
       methods: [
         'create', 'get', 'find', 'remove', 'createMultipartUpload', 'completeMultipartUpload',
-        'uploadPart', 'putObject', 'uploadFile', 'downloadFile' 
+        'uploadPart', 'putObject', 'uploadFile', 'downloadFile'
       ]
     })
     service = app.service('s3')
@@ -143,7 +143,7 @@ describe('feathers-s3-service', () => {
   })
   it('upload file', async () => {
     // uplaod file
-    let response = await service.uploadFile({ filePath, mimeType: fileType })
+    const response = await service.uploadFile({ filePath, mimeType: fileType })
     expect(response.id).to.equal(fileId)
     expect(response.Key).to.equal('feathers-s3-test-service/features.geojson')
     expect(response.ETag).toExist()
@@ -157,8 +157,8 @@ describe('feathers-s3-service', () => {
     const response = await service.create({ id: fileId, command: 'GetObject' })
     expect(response.SignedUrl).toExist()
   })
-  it ('download file', async () => {
-    const response = await service.downloadFile({ id: fileId, filePath: tmpFilePath })
+  it('download file', async () => {
+    await service.downloadFile({ id: fileId, filePath: tmpFilePath })
     expect(fs.statSync(filePath).size).to.equal(6868192)
   })
   it('remove remote and loca files', async () => {
