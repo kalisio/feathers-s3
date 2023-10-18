@@ -32,3 +32,11 @@ node_modules
 # Drawio backup
 .bkp
 .dtmp
+
+
+# Temporary files
+test/tmp/*.json
+test/tmp/*.png
+test/tmp/*.text
+test/tmp/*.geojson
+test/tmp/*.zip

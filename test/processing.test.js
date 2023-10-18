@@ -32,7 +32,7 @@ let resizedFileContent
 async function resizeImage (hook) {
   resizedFileContent = await sharp(hook.data.buffer).resize(128, 48, { fit: 'contain', background: '#00000000' }).toBuffer()
   // Write the processed image for further testing
-  await sharp(resizedFileContent).toFile('test/output/resized-image.png')
+  await sharp(resizedFileContent).toFile('test/tmp/resized-image.png')
   hook.data.buffer = resizedFileContent
 }
 
@@ -79,15 +79,15 @@ describe('feathers-s3-processing', () => {
     const buffer = service.atob(response.buffer)
     expect(buffer.toString()).to.equal(resizedFileContent.toString())
     // Write the downloaded image
-    await sharp(buffer).toFile('test/output/downloaded-resized-image.png')
+    await sharp(buffer).toFile('test/tmp/downloaded-resized-image.png')
     // Ensure it is similar to what we expect
-    const resizedImage = fs.readFileSync('test/output/resized-image.png')
-    const downloadedImage = fs.readFileSync('test/output/downloaded-resized-image.png')
+    const resizedImage = fs.readFileSync('test/tmp/resized-image.png')
+    const downloadedImage = fs.readFileSync('test/tmp/downloaded-resized-image.png')
     expect(resizedImage.toString()).to.equal(downloadedImage.toString())
   })
   it('remove uploaded file', async () => {
-    fs.unlinkSync('test/output/resized-image.png')
-    fs.unlinkSync('test/output/downloaded-resized-image.png')
+    fs.unlinkSync('test/tmp/resized-image.png')
+    fs.unlinkSync('test/tmp/downloaded-resized-image.png')
     const response = await service.remove(fileId)
     expect(response.id).to.equal(fileId)
     expect(response.$metadata.httpStatusCode).to.equal(204)

@@ -149,12 +149,14 @@ The payload `data` must contain the following properties:
 
 #### get (id, params)
 
-Get an object from a bucket.
+Get an object content from a bucket.
 
 | Parameter | Description |
 |---|---|
 | `id` |  the object key. Note that the final computed **Key** takes into account the `prefix` option of the service. |
 
+> NOTE
+> 
 > The object will be entirely read and transferred to the client, for large files consider using presigned URLs instead.
 
 #### remove (id, params)
@@ -226,6 +228,10 @@ The payload `data` must contain the following properties:
 
 Convenient method to upload a file.
 
+> NOTE
+>
+> This method is not declared on the client side.
+
 The payload `data` must contain the following properties:
 
 | Property | Description |
@@ -237,6 +243,21 @@ The payload `data` must contain the following properties:
 > NOTE
 >
 > You can also provide an `id` property to override the computed object key.
+
+#### downloadFile (data, params)
+
+Convenient method to download a file.
+
+> NOTE
+>
+> This method is not declared on the client side.
+
+The payload `data` must contain the following properties:
+
+| Property | Description |
+|---|---|
+| `ìd` | the file key. Note that the final computed **Key** takes into account the `prefix` option of the service. |
+| `filePath` | the path to the downloaded file.|
 
 ### Middlewares
 

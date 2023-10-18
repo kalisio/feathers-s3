@@ -27,8 +27,11 @@ const options = {
 }
 
 const fileId = 'features.geojson'
-const fileContent = fs.readFileSync('test/data/features.geojson')
-const blob = new Blob([fileContent], { type: 'application/geo+json' })
+const filePath = 'test/data/features.geojson'
+const tmpFilePath = 'test/tmp/features.geojson'
+const fileType = 'application/geo+json'
+const fileContent = fs.readFileSync(filePath)
+const blob = new Blob([fileContent], { type: fileType })
 const chunkSize = 1024 * 1024 * 5
 let uploadId
 const parts = []
@@ -45,7 +48,10 @@ describe('feathers-s3-service', () => {
   })
   it('create the service', async () => {
     app.use('s3', new Service(options), {
-      methods: ['create', 'get', 'find', 'remove', 'createMultipartUpload', 'completeMultipartUpload', 'uploadPart', 'putObject', 'uploadFile']
+      methods: [
+        'create', 'get', 'find', 'remove', 'createMultipartUpload', 'completeMultipartUpload',
+        'uploadPart', 'putObject', 'uploadFile', 'downloadFile' 
+      ]
     })
     service = app.service('s3')
     expect(service).toExist()
@@ -112,17 +118,17 @@ describe('feathers-s3-service', () => {
     expect(response.Location).toExist()
     expect(eventReceived).beTrue()
   })
-  it('list uploaded files', async () => {
+  it('list remote objects', async () => {
     const response = await service.find()
     expect(response.length).to.equal(1)
     expect(response[0].Key).to.equal(fileId)
   })
-  it('download file with middleware', async () => {
+  it('download object with middleware', async () => {
     const response = await superagent
       .get(`http://localhost:3333/s3-objects/${fileId}`)
     expect(response.text).to.equal(fileContent.toString())
   })
-  it('download file with service method', async () => {
+  it('download object with service method', async () => {
     const response = await service.get(fileId)
     expect(response.id).to.equal(fileId)
     expect(response.buffer).toExist()
@@ -130,32 +136,38 @@ describe('feathers-s3-service', () => {
     const buffer = service.atob(response.buffer)
     expect(buffer.toString()).to.equal(fileContent.toString())
   })
-  it('remove uploaded file', async () => {
+  it('remove remote object', async () => {
     const response = await service.remove(fileId)
     expect(response.id).to.equal(fileId)
     expect(response.$metadata.httpStatusCode).to.equal(204)
   })
   it('upload file', async () => {
-    const response = await service.uploadFile({ filePath: 'test/data/features.geojson', mimeType: 'application/geo+json' })
+    // uplaod file
+    let response = await service.uploadFile({ filePath, mimeType: fileType })
     expect(response.id).to.equal(fileId)
     expect(response.Key).to.equal('feathers-s3-test-service/features.geojson')
     expect(response.ETag).toExist()
   })
-  it('list uploaded files', async () => {
+  it('list remote files', async () => {
     const response = await service.find()
     expect(response.length).to.equal(1)
     expect(response[0].Key).to.equal(fileId)
   })
-  it('get signed url', async () => {
+  it('get signed url to download file', async () => {
     const response = await service.create({ id: fileId, command: 'GetObject' })
     expect(response.SignedUrl).toExist()
   })
-  it('remove uploaded file', async () => {
+  it ('download file', async () => {
+    const response = await service.downloadFile({ id: fileId, filePath: tmpFilePath })
+    expect(fs.statSync(filePath).size).to.equal(6868192)
+  })
+  it('remove remote and loca files', async () => {
     const response = await service.remove(fileId)
     expect(response.id).to.equal(fileId)
     expect(response.$metadata.httpStatusCode).to.equal(204)
+    fs.unlinkSync(tmpFilePath)
   })
-  it('check bucket destination is empty', async () => {
+  it('check remote is empty', async () => {
     const response = await service.find()
     expect(response.length).to.equal(0)
   })
