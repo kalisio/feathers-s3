@@ -161,7 +161,7 @@ describe('feathers-s3-service', () => {
     await service.downloadFile({ id: fileId, filePath: tmpFilePath })
     expect(fs.statSync(filePath).size).to.equal(6868192)
   })
-  it('remove remote and loca files', async () => {
+  it('remove remote and local files', async () => {
     const response = await service.remove(fileId)
     expect(response.id).to.equal(fileId)
     expect(response.$metadata.httpStatusCode).to.equal(204)
