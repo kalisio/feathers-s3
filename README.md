@@ -224,6 +224,20 @@ The payload `data` must contain the following properties:
 | `buffer` | the content to be uploaded. |
 | `type` | the content type to be uploaded. |
 
+#### getObjectCommand (data, params)
+
+Execute the **GetObjectCommand** and returns the response.
+
+> NOTE
+>
+> This method is not declared on the client side.
+
+The payload `data` must contain the following properties:
+
+| Property | Description |
+|---|---|
+| `id` |  the object key. Note that the final computed **Key** takes into account the `prefix` option of the service. |
+
 #### uploadFile (data, params)
 
 Convenient method to upload a file.
@@ -238,7 +252,6 @@ The payload `data` must contain the following properties:
 |---|---|
 | `filePath` | the path to the file to be uploaded. The basename is used for computing the object key. |
 | `mimeType` | the content type of the file to be uploaded. |
-
 
 > NOTE
 >
