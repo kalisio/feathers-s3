@@ -113,7 +113,7 @@ clientService.upload(id, blob, options)
 
 ### Service
 
-#### Service (options)
+#### constructor (options)
 
 Create an instance of the service with the given options:
 
