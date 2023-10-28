@@ -143,7 +143,7 @@ describe('feathers-s3-service', () => {
   })
   it('upload file', async () => {
     // uplaod file
-    const response = await service.uploadFile({ filePath, mimeType: fileType })
+    const response = await service.uploadFile({ filePath, contentType: fileType })
     expect(response.id).to.equal(fileId)
     expect(response.Key).to.equal('feathers-s3-test-service/features.geojson')
     expect(response.ETag).toExist()
