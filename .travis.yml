@@ -15,7 +15,7 @@ before-script:
   > ./cc-test-reporter
 - chmod +x ./cc-test-reporter
 - "./cc-test-reporter before-build"
-- git clone https://oauth2:$GITHUB_TOKEN@github.com/kalisio/development.git "development"
+- git clone https://oauth2:$GITHUB_TOKEN@github.com/kalisio/development.git
 - source development/workspaces/libs/libs.sh feathers-s3
 script:
 - yarn test
