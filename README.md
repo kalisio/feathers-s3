@@ -155,8 +155,7 @@ Get an object content from a bucket.
 |---|---|
 | `id` |  the object key. Note that the final computed **Key** takes into account the `prefix` option of the service. |
 
-> NOTE
-> 
+> [!NOTE]
 > The object will be entirely read and transferred to the client, for large files consider using presigned URLs instead.
 
 #### remove (id, params)
@@ -228,8 +227,7 @@ The payload `data` must contain the following properties:
 
 Execute the **GetObjectCommand** and returns the response.
 
-> NOTE
->
+> [!NOTE]
 > This method is not declared on the client side.
 
 The payload `data` must contain the following properties:
@@ -242,8 +240,7 @@ The payload `data` must contain the following properties:
 
 Convenient method to upload a file.
 
-> NOTE
->
+> [!NOTE]
 > This method is not declared on the client side.
 
 The payload `data` must contain the following properties:
@@ -253,16 +250,14 @@ The payload `data` must contain the following properties:
 | `filePath` | the path to the file to be uploaded. The basename is used for computing the object key. |
 | `contentType` | the content type of the file to be uploaded. |
 
-> NOTE
->
+> [!NOTE]
 > You can also provide an `id` property to override the computed object key.
 
 #### downloadFile (data, params)
 
 Convenient method to download a file.
 
-> NOTE
->
+> [!NOTE]
 > This method is not declared on the client side.
 
 The payload `data` must contain the following properties:
@@ -299,7 +294,7 @@ import { authenticate } from '@feathersjs/express'
 app.get('/s3-objects/*', authenticate('jwt'), getObject(service))
 ```
 
-In this case, if you need to reference the object by the URL it will require you to add the JWT as a query parameter like this: `<img src="your.domain.com/s3-objects/my-file.png?jwt=XXX">`. The JWT can then be extracted by a middleware:
+In this case, if you need to reference the object by the URL it will require you to add the JWT as a query parameter like this: `<img src="your.domain.com/s3-objects/my-file.png?jwt=TOKEN">`. The JWT can then be extracted by a middleware:
 ```js
 import { authenticate } from '@feathersjs/express'
 
