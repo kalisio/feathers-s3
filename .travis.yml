@@ -14,10 +14,12 @@ env:
 - CC_TEST_REPORTER_ID=681b33804ec176222d1afdfdfcd811e2e0e854ad24d6c5f943aee8c34a64e4f4
 
 before-script:
+# codeclimate
 - curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64
   > ./cc-test-reporter
 - chmod +x ./cc-test-reporter
 - "./cc-test-reporter before-build"
+# development secrets
 - bash .travis.sops.sh
 - git clone https://oauth2:$GITHUB_TOKEN@github.com/kalisio/development.git
 - source development/workspaces/libs/libs.sh feathers-s3
