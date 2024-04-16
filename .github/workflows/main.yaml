@@ -1,8 +1,6 @@
 name: Main CI
 on: [ push ]
 
-concurrency: 
-  group: ci
 jobs:
   run_tests:
     name: Run tests
