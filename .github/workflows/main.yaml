@@ -1,4 +1,4 @@
-name: Main CI
+name: workflow
 on: [ push ]
 
 jobs:
