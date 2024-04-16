@@ -43,3 +43,10 @@ done
 ##
 
 run_lib_tests "$ROOT_DIR" "$CODE_COVERAGE" "$NODE_VER" "$MONGO_VER"
+
+## Publish code coverage
+##
+
+if [ "$CODE_COVERAGE" = true ]; then
+    send_coverage_to_cc "$CC_TEST_REPORTER_ID"
+fi

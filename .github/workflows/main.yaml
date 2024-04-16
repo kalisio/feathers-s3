@@ -1,9 +1,13 @@
 name: Main CI
 on: [ push ]
 
+concurrency: 
+  group: ci
 jobs:
   run_tests:
     name: Run tests
+    concurrency:
+      group: ci
     runs-on: ubuntu-22.04
     steps:
       - name: Checkout repo
@@ -28,6 +32,8 @@ jobs:
       matrix:
         node: [ 18, 20 ]
     name: Additional tests (node ${{ matrix.node }})
+    concurrency:
+      group: ci
     if: ${{ contains(github.event.head_commit.message, 'additional tests') }}
     runs-on: ubuntu-22.04
     steps:
