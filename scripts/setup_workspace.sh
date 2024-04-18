@@ -14,7 +14,7 @@ ROOT_DIR=$(dirname "$THIS_DIR")
 begin_group "Setting up workspace ..."
 
 if [ "$CI" = true ]; then
-    WORKSPACE_DIR="$(basename "$ROOT_DIR")"
+    WORKSPACE_DIR="$(dirname "$ROOT_DIR")"
     DEVELOPMENT_REPO_URL="https://$GITHUB_DEVELOPMENT_PAT@github.com/kalisio/development.git"
 else
     while getopts "b:t" option; do
