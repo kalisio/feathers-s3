@@ -11,13 +11,10 @@ ROOT_DIR=$(dirname "$THIS_DIR")
 ## Parse options
 ##
 
-WORKSPACE_BRANCH=
-WORKSPACE_TAG=
-
 begin_group "Setting up workspace ..."
 
 if [ "$CI" = true ]; then
-    WORKSPACE_DIR="$(dirname "$ROOT_DIR")"
+    WORKSPACE_DIR="$(basename "$ROOT_DIR")"
     DEVELOPMENT_REPO_URL="https://$GITHUB_DEVELOPMENT_PAT@github.com/kalisio/development.git"
 else
     while getopts "b:t" option; do
@@ -30,25 +27,15 @@ else
             ;;
         esac
     done
+
     shift $((OPTIND-1))
     WORKSPACE_DIR="$1"
-
-    # NOTE: cloning feathers-s3 could be avoided if we could parse app_version from tag/branch name instead
-    # In this case, the kli would clone feathers-s3
-    GIT_OPS="--recurse-submodules"
-    if [ -n "$WORKSPACE_TAG" ] || [ -n "$WORKSPACE_BRANCH" ]; then
-        GIT_OPS="$GIT_OPS --branch ${WORKSPACE_TAG:-$WORKSPACE_BRANCH}"
-    fi
-    git clone --depth 1 $GIT_OPS "$GITHUB_URL/kalisio/feathers-s3.git" "$WORKSPACE_DIR/feathers-s3"
-
     DEVELOPMENT_REPO_URL="$GITHUB_URL/kalisio/development.git"
 
-    # unset KALISIO_DEVELOPMENT_DIR because we want kli to clone everyhting in $WORKSPACE_DIR
-    unset KALISIO_DEVELOPMENT_DIR
+    # Clone project in the workspace
+    git_shallow_clone "$GITHUB_URL/kalisio/feathers-s3.git" "$WORKSPACE_DIR/feathers-s3" "${WORKSPACE_TAG:-${WORKSPACE_BRANCH:-}}"
 fi
 
-# clone development in $WORKSPACE_DIR
-DEVELOPMENT_DIR="$WORKSPACE_DIR/development"
-git clone --depth 1 "$DEVELOPMENT_REPO_URL" "$DEVELOPMENT_DIR"
+setup_lib_workspace "$WORKSPACE_DIR" "$DEVELOPMENT_REPO_URL"
 
 end_group "Setting up workspace ..."
