@@ -21,7 +21,7 @@ else
         case $option in
             b) # defines branch
                 WORKSPACE_BRANCH=$OPTARG;;
-            t) # defines venv tag
+            t) # defines tag
                 WORKSPACE_TAG=$OPTARG;;
             *)
             ;;
