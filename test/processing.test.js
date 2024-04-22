@@ -5,6 +5,7 @@ import chailint from 'chai-lint'
 import sharp from 'sharp'
 import express from '@feathersjs/express'
 import fs from 'fs'
+import crypto from 'crypto'
 import { Service } from '../lib/index.js'
 
 feathers.setDebug(makeDebug)
@@ -22,7 +23,7 @@ const options = {
     signatureVersion: 'v4'
   },
   bucket: process.env.S3_BUCKET,
-  prefix: 'feathers-s3-test-service'
+  prefix: crypto.randomUUID()
 }
 
 const fileId = 'image.png'

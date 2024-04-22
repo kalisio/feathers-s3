@@ -1,11 +1,9 @@
-name: CI
-on: [ push, workflow_dispatch ]
+name: ci
+on: [ push, workflow_disTOKENch ]
 
 jobs:
   run_tests:
     name: Run tests
-    concurrency:
-      group: ci
     runs-on: ubuntu-22.04
     steps:
       - name: Checkout repo
@@ -16,7 +14,7 @@ jobs:
         run: bash ./scripts/init_runner.sh ${{ github.job }}
       - name: Setup workspace
         env:
-          GITHUB_DEVELOPMENT_PAT: ${{ secrets.GH_DEVELOPMENT_PAT }}
+          GITHUB_DEVELOPMENT_TOKEN: ${{ secrets.GH_DEVELOPMENT_TOKEN }}
         run: bash ./scripts/setup_workspace.sh
       - name: Run tests
         env:
@@ -30,8 +28,6 @@ jobs:
       matrix:
         node: [ 18, 20 ]
     name: Additional tests (node ${{ matrix.node }})
-    concurrency:
-      group: ci
     if: ${{ contains(github.event.head_commit.message, 'additional tests') }}
     runs-on: ubuntu-22.04
     steps:
@@ -43,7 +39,7 @@ jobs:
         run: bash ./scripts/init_runner.sh ${{ github.job }}
       - name: Setup workspace
         env:
-          GITHUB_DEVELOPMENT_PAT: ${{ secrets.GH_DEVELOPMENT_PAT }}
+          GITHUB_DEVELOPMENT_TOKEN: ${{ secrets.GH_DEVELOPMENT_TOKEN }}
         run: bash ./scripts/setup_workspace.sh
       - name: Run tests
         env:

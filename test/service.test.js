@@ -5,6 +5,7 @@ import chailint from 'chai-lint'
 import superagent from 'superagent'
 import express from '@feathersjs/express'
 import fs from 'fs'
+import crypto from 'crypto'
 import { Blob } from 'buffer'
 import { Service, getObject } from '../lib/index.js'
 
@@ -23,7 +24,7 @@ const options = {
     signatureVersion: 'v4'
   },
   bucket: process.env.S3_BUCKET,
-  prefix: 'feathers-s3-test-service'
+  prefix: crypto.randomUUID()
 }
 
 const fileId = 'features.geojson'

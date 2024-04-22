@@ -9,6 +9,7 @@ import feathersSocketio from '@feathersjs/socketio'
 import io from 'socket.io-client'
 import { Service, getClientService } from '../lib/index.js'
 import fs from 'fs'
+import crypto from 'crypto'
 import { Blob } from 'buffer'
 import fetch from 'node-fetch'
 
@@ -32,7 +33,7 @@ const options = {
     signatureVersion: 'v4'
   },
   bucket: process.env.S3_BUCKET,
-  prefix: 'feathers-s3-test-client'
+  prefix: crypto.randomUUID()
 }
 
 const textFileId = 'text.txt'
