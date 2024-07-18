@@ -23,7 +23,7 @@
     "url": "https://github.com/kalisio/feathers-s3/issues"
   },
   "engines": {
-    "node": ">= 16.0.0"
+    "node": ">= 18.0.0"
   },
   "scripts": {
     "publish": "git push origin --tags && git push origin",
