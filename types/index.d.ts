@@ -3,13 +3,22 @@ import { S3Client, ListObjectsCommandOutput, GetObjectCommandOutput } from '@aws
 
 // Configuration options for the S3 service
 export interface S3Options {
-  s3Client: S3Client;
+  s3Client: {
+    credentials: {
+      accessKeyId: string;
+      secretAccessKey: string;
+    };
+    endpoint: string;
+    region: string;
+    signatureVersion: string;
+  };
   bucket: string;
   delimiter?: string;
   prefix?: string;
   id?: string;
   atob?: (data: string) => Buffer;
   btoa?: (data: ArrayBuffer) => string;
+  getObjectPath?: string;
 }
 
 // Represents a file in S3
