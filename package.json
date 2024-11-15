@@ -1,7 +1,7 @@
 {
   "name": "@kalisio/feathers-s3",
   "description": "Manage s3 objects using presigned url",
-  "version": "1.4.0",
+  "version": "1.5.0",
   "homepage": "https://github.com/kalisio/feathers-s3",
   "main": "lib/index.js",
   "types": "types/feathers-s3.d.ts",
