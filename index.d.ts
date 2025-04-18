@@ -31,7 +31,10 @@ export interface S3File {
 
 // S3 Service class
 export class Service implements ServiceMethods<any> {
+  path?: string;
+
   constructor(options: S3Options);
+
   update(id: NullableId, data: Partial<any>, params?: Params<Query> | undefined): Promise<any>;
   patch(id: NullableId, data: Partial<Partial<any>>, params?: Params<Query> | undefined): Promise<any>;
   setup?(app: Application, path: string): Promise<void>;
@@ -80,11 +83,3 @@ export function getObject(service: Service): (req: any, res: any) => Promise<voi
 
 // Function to retrieve client service
 export function getClientService(app: Application, options: ClientOptions): Service;
-
-// Extend the FeathersJS Application with S3 service
-declare module '@feathersjs/feathers' {
-  interface Application {
-    use(path: string, service: Partial<Service>): this;
-    service(path: string): Service;
-  }
-}
