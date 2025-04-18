@@ -1,7 +1,7 @@
 {
   "name": "@kalisio/feathers-s3",
   "description": "Manage s3 objects using presigned url",
-  "version": "1.4.0",
+  "version": "1.5.0",
   "homepage": "https://github.com/kalisio/feathers-s3",
   "main": "lib/index.js",
   "types": "types/feathers-s3.d.ts",
@@ -51,8 +51,8 @@
     "lib": "lib"
   },
   "dependencies": {
-    "@aws-sdk/client-s3": "^3.209.0",
-    "@aws-sdk/s3-request-presigner": "^3.209.0",
+    "@aws-sdk/client-s3": "^3.693.0",
+    "@aws-sdk/s3-request-presigner": "^3.693.0",
     "@feathersjs/commons": "^5.0.8",
     "@feathersjs/errors": "^5.0.8",
     "debug": "^4.1.0",
