@@ -1,5 +1,5 @@
 import { Params, ServiceMethods, Application, NullableId, Query } from '@feathersjs/feathers';
-import { S3Client, ListObjectsCommandOutput, GetObjectCommandOutput } from '@aws-sdk/client-s3';
+import { ListObjectsCommandOutput, GetObjectCommandOutput } from '@aws-sdk/client-s3';
 
 // Configuration options for the S3 service
 export interface S3Options {
