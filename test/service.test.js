@@ -27,7 +27,7 @@ const options = {
   prefix: crypto.randomUUID()
 }
 
-const fileId = 'features.geojson'
+const fileId = 'data/features.geojson'
 const filePath = 'test/data/features.geojson'
 const tmpFilePath = 'test/tmp/features.geojson'
 const fileType = 'application/geo+json'
@@ -211,10 +211,11 @@ describe('feathers-s3-service', () => {
   })
 
   it('upload file', async () => {
+
     // upload file
     const response = await service.uploadFile({ id: fileId, contentType: fileType })
     expect(response.id).to.equal(fileId)
-    expect(response.Key).to.equal(`${options.prefix}/features.geojson`)
+    expect(response.Key).to.equal(`${options.prefix}/${fileId}`)
     expect(response.ETag).toExist()
   })
   it('list remote files', async () => {
