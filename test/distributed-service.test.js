@@ -7,7 +7,6 @@ import io from 'socket.io-client'
 import distribution, { finalize } from '@kalisio/feathers-distributed'
 import chai, { util, expect } from 'chai'
 import chailint from 'chai-lint'
-import superagent from 'superagent'
 import fetch from 'node-fetch'
 import fs from 'fs'
 import utility from 'util'
@@ -146,15 +145,17 @@ describe('feathers-s3-distributed-service', () => {
   })
   it('upload data file from client', async () => {
     const blob = new Blob([fileContent], { type: 'image/png' })
+    // FIXME: custom event not received
+    /*
     let eventReceived = false
     clientService.once('object-put', (data) => {
       if (data.id === fileId) eventReceived = true
     })
+    */
     const response = await clientService.upload(fileId, blob, { expiresIn: 30 })
     // Wait long enough to be sure the event has been raised
     await utility.promisify(setTimeout)(5000)
     expect(response.ETag).toExist()
-    // FIXME: custom event not received
     //expect(eventReceived).beTrue()
   })
   it('download data file from client', async () => {
