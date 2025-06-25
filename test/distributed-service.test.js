@@ -48,7 +48,7 @@ const distributionConfig = {
   consumerApp: {
     // We only consume services we don't produce any
     services: (service) => false,
-    // Consume only probing
+    // Consume only S3 service
     remoteServices: (service) => service.path.endsWith('s3'),
     // Methods and events we'd like to distribute, include any custom method or event
     distributedMethods: methods,
@@ -62,7 +62,7 @@ const distributionConfig = {
     publicationDelay: 5000
   },
   storageApp: {
-    // Distribute only probing
+    // Distribute only S3 service
     services: (service) => service.path.endsWith('s3'),
     // We only produce services we don't consume any
     remoteServices: (service) => false,
