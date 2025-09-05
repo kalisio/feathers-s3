@@ -1,15 +1,24 @@
 import { Params, ServiceMethods, Application, NullableId, Query } from '@feathersjs/feathers';
-import { S3Client, ListObjectsCommandOutput, GetObjectCommandOutput } from '@aws-sdk/client-s3';
+import { ListObjectsCommandOutput, GetObjectCommandOutput } from '@aws-sdk/client-s3';
 
 // Configuration options for the S3 service
 export interface S3Options {
-  s3Client: S3Client;
+  s3Client: {
+    credentials: {
+      accessKeyId: string;
+      secretAccessKey: string;
+    };
+    endpoint: string;
+    region: string;
+    signatureVersion: string;
+  };
   bucket: string;
   delimiter?: string;
   prefix?: string;
   id?: string;
   atob?: (data: string) => Buffer;
   btoa?: (data: ArrayBuffer) => string;
+  getObjectPath?: string;
 }
 
 // Represents a file in S3
@@ -22,7 +31,10 @@ export interface S3File {
 
 // S3 Service class
 export class Service implements ServiceMethods<any> {
+  path?: string;
+
   constructor(options: S3Options);
+
   update(id: NullableId, data: Partial<any>, params?: Params<Query> | undefined): Promise<any>;
   patch(id: NullableId, data: Partial<Partial<any>>, params?: Params<Query> | undefined): Promise<any>;
   setup?(app: Application, path: string): Promise<void>;
@@ -71,11 +83,3 @@ export function getObject(service: Service): (req: any, res: any) => Promise<voi
 
 // Function to retrieve client service
 export function getClientService(app: Application, options: ClientOptions): Service;
-
-// Extend the FeathersJS Application with S3 service
-declare module '@feathersjs/feathers' {
-  interface Application {
-    use(path: string, service: Partial<Service>): this;
-    service(path: string): Service;
-  }
-}

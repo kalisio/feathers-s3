@@ -40,3 +40,4 @@ test/tmp/*.png
 test/tmp/*.text
 test/tmp/*.geojson
 test/tmp/*.zip
+.env

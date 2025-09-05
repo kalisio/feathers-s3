@@ -37,6 +37,11 @@ const chunkSize = 1024 * 1024 * 5
 let uploadId
 const parts = []
 
+const prefixedFileId = 'prefixed-file.txt'
+const prefixedSubfolder = 'test-subfolder'
+const prefixedContent = 'This is a test file with prefix'
+const prefixedBlob = new Blob([prefixedContent], { type: 'text/plain' })
+
 describe('feathers-s3-service', () => {
   before(() => {
     chailint(chai, util)
@@ -49,10 +54,7 @@ describe('feathers-s3-service', () => {
   })
   it('create the service', async () => {
     app.use('s3', new Service(options), {
-      methods: [
-        'create', 'get', 'find', 'remove', 'createMultipartUpload', 'completeMultipartUpload',
-        'uploadPart', 'putObject', 'uploadFile', 'downloadFile'
-      ]
+      methods: ['create', 'get', 'find', 'remove', 'createMultipartUpload', 'completeMultipartUpload', 'uploadPart', 'putObject', 'uploadFile', 'downloadFile']
     })
     service = app.service('s3')
     expect(service).toExist()
@@ -75,13 +77,16 @@ describe('feathers-s3-service', () => {
     service.once('part-uploaded', (data) => {
       if (data.id === fileId) eventReceived = true
     })
-    const response = await service.uploadPart({
-      id: fileId,
-      buffer: await blob.slice(0, chunkSize).arrayBuffer(),
-      type: blob.type,
-      PartNumber: 1,
-      UploadId: uploadId
-    }, { expiresIn: 30 })
+    const response = await service.uploadPart(
+      {
+        id: fileId,
+        buffer: await blob.slice(0, chunkSize).arrayBuffer(),
+        type: blob.type,
+        PartNumber: 1,
+        UploadId: uploadId
+      },
+      { expiresIn: 30 }
+    )
     expect(response.id).to.equal(fileId)
     expect(response.ETag).toExist()
     parts.push({ PartNumber: 1, ETag: response.ETag })
@@ -92,13 +97,16 @@ describe('feathers-s3-service', () => {
     service.once('part-uploaded', (data) => {
       if (data.id === fileId) eventReceived = true
     })
-    const response = await service.uploadPart({
-      id: fileId,
-      buffer: await blob.slice(chunkSize, blob.size).arrayBuffer(),
-      type: blob.type,
-      PartNumber: 2,
-      UploadId: uploadId
-    }, { expiresIn: 30 })
+    const response = await service.uploadPart(
+      {
+        id: fileId,
+        buffer: await blob.slice(chunkSize, blob.size).arrayBuffer(),
+        type: blob.type,
+        PartNumber: 2,
+        UploadId: uploadId
+      },
+      { expiresIn: 30 }
+    )
     expect(response.id).to.equal(fileId)
     expect(response.ETag).toExist()
     parts.push({ PartNumber: 2, ETag: response.ETag })
@@ -125,8 +133,7 @@ describe('feathers-s3-service', () => {
     expect(response[0].Key).to.equal(fileId)
   })
   it('download object with middleware', async () => {
-    const response = await superagent
-      .get(`http://localhost:3333/s3-objects/${fileId}`)
+    const response = await superagent.get(`http://localhost:3333/s3-objects/${fileId}`)
     expect(response.text).to.equal(fileContent.toString())
   })
   it('download object with service method', async () => {
@@ -142,9 +149,71 @@ describe('feathers-s3-service', () => {
     expect(response.id).to.equal(fileId)
     expect(response.$metadata.httpStatusCode).to.equal(204)
   })
+  it('upload file with subfolder prefix', async () => {
+    let eventReceived = false
+    service.once('object-put', (data) => {
+      if (data.id === prefixedFileId) eventReceived = true
+    })
+
+    const response = await service.putObject(
+      {
+        id: prefixedFileId,
+        buffer: await prefixedBlob.arrayBuffer(),
+        type: 'text/plain'
+      },
+      {
+        query: {
+          Prefix: prefixedSubfolder
+        }
+      }
+    )
+
+    expect(response.id).to.equal(prefixedFileId)
+    expect(response.ETag).toExist()
+    expect(eventReceived).beTrue()
+  })
+
+  it('list objects including prefixed objects', async () => {
+    const response = await service.find()
+    expect(response.length).to.equal(1)
+    expect(response[0].Key).to.equal(`${prefixedSubfolder}/${prefixedFileId}`)
+  })
+
+  it('get object with prefix', async () => {
+    const response = await service.get(prefixedFileId, {
+      query: {
+        Prefix: prefixedSubfolder
+      }
+    })
+
+    expect(response.id).to.equal(prefixedFileId)
+    expect(response.buffer).toExist()
+    expect(response.type).to.equal('text/plain')
+
+    const buffer = service.atob(response.buffer)
+    expect(buffer.toString()).to.equal(prefixedContent)
+  })
+
+  it('remove object with prefix', async () => {
+    const response = await service.remove(prefixedFileId, {
+      query: {
+        Prefix: prefixedSubfolder
+      }
+    })
+
+    expect(response.id).to.equal(prefixedFileId)
+    expect(response.$metadata.httpStatusCode).to.equal(204)
+  })
+
+  it('verify prefixed object is removed', async () => {
+    const response = await service.find()
+    expect(response.length).to.equal(0)
+  })
+
   it('upload file', async () => {
-    // uplaod file
-    const response = await service.uploadFile({ id: fileId, filePath, contentType: fileType })
+
+    // upload file
+    const response = await service.uploadFile({ id: fileId, contentType: fileType })
     expect(response.id).to.equal(fileId)
     expect(response.Key).to.equal(`${options.prefix}/${fileId}`)
     expect(response.ETag).toExist()
