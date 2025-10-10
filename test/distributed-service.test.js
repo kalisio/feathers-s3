@@ -156,7 +156,7 @@ describe('feathers-s3-distributed-service', () => {
     // Wait long enough to be sure the event has been raised
     await utility.promisify(setTimeout)(5000)
     expect(response.ETag).toExist()
-    //expect(eventReceived).beTrue()
+    // expect(eventReceived).beTrue()
   })
   it('download data file from client', async () => {
     const response = await clientService.download(fileId, { expiresIn: 30 })
@@ -168,7 +168,7 @@ describe('feathers-s3-distributed-service', () => {
     const response = await clientService.remove(fileId)
     expect(response.$metadata.httpStatusCode).to.equal(204)
   })
-  
+
   after(async () => {
     await expressServer.close()
     finalize(consumerApp)
