@@ -129,6 +129,17 @@ describe('feathers-s3-service', () => {
       .get(`http://localhost:3333/s3-objects/${fileId}`)
     expect(response.text).to.equal(fileContent.toString())
   })
+  it('raises error with middleware', async () => {
+    try {
+      await superagent
+        .get(`http://localhost:3333/s3-objects/nosuchkey`)
+      assert.fail('middleware should raise on error')
+    } catch (error) {
+      // Not sure why but in this case the raised error is in text/html format
+      expect(error.status).to.equal(404)
+      expect(error.response.text.includes('NoSuchKey')).beTrue()
+    }
+  })
   it('download object with service method', async () => {
     const response = await service.get(fileId)
     expect(response.id).to.equal(fileId)
