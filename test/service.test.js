@@ -1,7 +1,7 @@
 import makeDebug from 'debug'
 import feathers from '@feathersjs/feathers'
 import express from '@feathersjs/express'
-import chai, { util, expect } from 'chai'
+import chai, { util, expect, assert } from 'chai'
 import chailint from 'chai-lint'
 import superagent from 'superagent'
 import fs from 'fs'
@@ -132,7 +132,7 @@ describe('feathers-s3-service', () => {
   it('raises error with middleware', async () => {
     try {
       await superagent
-        .get(`http://localhost:3333/s3-objects/nosuchkey`)
+        .get('http://localhost:3333/s3-objects/nosuchkey')
       assert.fail('middleware should raise on error')
     } catch (error) {
       // Not sure why but in this case the raised error is in text/html format
