@@ -1,9 +1,26 @@
 name: ci
-on: [ push, workflow_dispatch ]
+on:
+  push:
+  workflow_dispatch:
+    inputs:
+      run_tests:
+        description: "Run tests"
+        default: false
+        required: false
+        type: boolean
+      additional_tests:
+        description: "Run additional tests"
+        default: false
+        required: false
+        type: boolean
 
 jobs:
   run_tests:
     name: Run tests
+    if: ${{
+      github.event_name == 'workflow_dispatch' && inputs.run_tests ||
+      github.event_name == 'push' && !contains(github.event.head_commit.message, 'skip tests')
+      }}
     runs-on: ubuntu-22.04
     steps:
       - name: Checkout repo
@@ -19,8 +36,7 @@ jobs:
       - name: Run tests
         env:
           SOPS_AGE_KEY: ${{ secrets.SOPS_AGE_KEY }}
-        #run: bash ./scripts/run_tests.sh -c -r ${{ github.job }}
-        run: bash ./scripts/run_tests.sh -r ${{ github.job }}
+        run: bash ./scripts/run_tests.sh -c -r ${{ github.job }}
 
   additional_tests:
     strategy:
@@ -28,7 +44,10 @@ jobs:
       matrix:
         node: [ 18, 22 ]
     name: Additional tests
-    if: ${{ contains(github.event.head_commit.message, 'additional tests') }}
+    if: ${{
+      github.event_name == 'workflow_dispatch' && inputs.additional_tests ||
+      github.event_name == 'push' && contains(github.event.head_commit.message, 'additional tests')
+      }}
     runs-on: ubuntu-22.04
     steps:
       - name: Checkout repo
