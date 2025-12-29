@@ -2,6 +2,7 @@
 
 [![Latest Release](https://img.shields.io/github/v/tag/kalisio/feathers-s3?sort=semver&label=latest)](https://github.com/kalisio/feathers-s3/releases)
 [![Build Status](https://github.com/kalisio/feathers-s3/actions/workflows/main.yaml/badge.svg)](https://github.com/kalisio/feathers-s3/actions/workflows/main.yaml)
+[![Quality Gate Status](https://sonar.portal.kalisio.com/api/project_badges/measure?project=kalisio-feathers-s3&metric=alert_status&token=sqb_6e6aa1c18fd2693c4b06d56234cf1d834a237686)](https://sonar.portal.kalisio.com/dashboard?id=kalisio-feathers-s3)
 [![Maintainability Issues](https://sonar.portal.kalisio.com/api/project_badges/measure?project=kalisio-feathers-s3&metric=software_quality_maintainability_issues&token=sqb_6e6aa1c18fd2693c4b06d56234cf1d834a237686)](https://sonar.portal.kalisio.com/dashboard?id=kalisio-feathers-s3)
 [![Coverage](https://sonar.portal.kalisio.com/api/project_badges/measure?project=kalisio-feathers-s3&metric=coverage&token=sqb_6e6aa1c18fd2693c4b06d56234cf1d834a237686)](https://sonar.portal.kalisio.com/dashboard?id=kalisio-feathers-s3)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
