@@ -38,7 +38,7 @@ The following sections illustrate the different process implemented by `feathers
 
 ### Upload
 
-The `upload` process can be a **singlepart** upload or a **multipart** upload depending on the size of the object to be uploaded. If the size is greater than a `chunkSize` (by default 5MB), `feathers-s3` performs a **multipart** upload. Otherwise it performs a **singlepart** upload. 
+The `upload` process can be a **singlepart** upload or a **multipart** upload depending on the size of the object to be uploaded. If the size is greater than a `chunkSize` (by default 5MB), `feathers-s3` performs a **multipart** upload. Otherwise it performs a **singlepart** upload.
 
 #### Singlepart upload
 
@@ -170,7 +170,7 @@ Remove an object fromt the bucket.
 
 #### createMultipartUpload (data, params)
 
-Initiate a multipart upload. 
+Initiate a multipart upload.
 
 It wraps the [CreateMultipartUploadCommand](https://docs.aws.amazon.com/AWSJavaScriptSDK/v3/latest/clients/client-s3/interfaces/createmultipartuploadcommandoutput.html).
 
@@ -185,7 +185,7 @@ Any optional properties are forwarded to the underlying `CreateMultipartUploadCo
 
 #### completeMultipartUpload (data, params)
 
-Finalize a multipart upload. 
+Finalize a multipart upload.
 
 It wraps the [CompleteMultipartUploadCommand](https://docs.aws.amazon.com/AWSJavaScriptSDK/v3/latest/clients/client-s3/classes/completemultipartuploadcommand.html).
 
@@ -361,12 +361,8 @@ If the `proxy` option is undefined. The client performs the download action dire
 
 ## License
 
-Copyright (c) 2017-20xx Kalisio
-
 Licensed under the [MIT license](LICENSE).
 
-## Authors
+Copyright (c) 2017-20xx [Kalisio](https://kalisio.com)
 
-This project is sponsored by 
-
-[![Kalisio](https://s3.eu-central-1.amazonaws.com/kalisioscope/kalisio/kalisio-logo-black-256x84.png)](https://kalisio.com)
+[![Kalisio](https://kalisio.github.io/kalisioscope/kalisio/kalisio-logo-black-256x84.png)](https://kalisio.com)
