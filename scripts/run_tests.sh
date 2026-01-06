@@ -13,18 +13,15 @@ WORKSPACE_DIR="$(dirname "$ROOT_DIR")"
 ##
 
 NODE_VER=20
-MONGO_VER=7
+MONGO_VER=""
 CI_STEP_NAME="Run tests"
 RUN_SONAR=false
-while getopts "m:n:sr:" option; do
+while getopts "n:sr:" option; do
     case $option in
-        m) # defines mongo version
-            MONGO_VER=$OPTARG
-            ;;
         n) # defines node version
             NODE_VER=$OPTARG
              ;;
-        s) # enable SonarQube analysis and publish code quality & coverage results
+        s) # publish code coverage
             RUN_SONAR=true
             ;;
         r) # report outcome to slack
