@@ -162,11 +162,19 @@ Get an object content from a bucket.
 
 #### remove (id, params)
 
-Remove an object fromt the bucket.
+Remove an object from the bucket.
 
 | Parameter | Description |
 |---|---|
-| `id` |  the object key. Note that the final computed **Key** takes into account the `prefix` option of the service. |
+| `id` | the object key. Note that the final computed **Key** takes into account the `prefix` option of the service. |
+
+The `params.query` object supports the following property:
+
+| Query parameter | Description |
+|---|---|
+| `recursive` | when `true`, treats `id` as a prefix and removes **all objects** whose key starts with it. Internally paginates through [ListObjectsCommand](https://docs.aws.amazon.com/AWSJavaScriptSDK/v3/latest/clients/client-s3/classes/listobjectscommand.html) and batch-deletes via [DeleteObjectsCommand](https://docs.aws.amazon.com/AWSJavaScriptSDK/v3/latest/clients/client-s3/classes/deleteobjectscommand.html). |
+
+When `recursive` is `true` the response shape is `{ id, deleted }` where `deleted` is an array of the objects that were removed. Otherwise the standard [DeleteObjectCommandOutput](https://docs.aws.amazon.com/AWSJavaScriptSDK/v3/latest/clients/client-s3/interfaces/deleteobjectcommandoutput.html) is returned.
 
 #### createMultipartUpload (data, params)
 
