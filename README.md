@@ -18,6 +18,7 @@
 >
 > This repository is no longer maintained.
 
+<details> <summary>Legacy documentation</summary>
 
 Unlike the solution [feathers-blob](https://github.com/feathersjs-ecosystem/feathers-blob), which provides a store abstraction, `feathers-s3` is limited to
 be used with stores providing a S3 compatible API. However, it takes advantage of the **S3 API** by using [presigned URLs](https://docs.aws.amazon.com/AmazonS3/latest/userguide/using-presigned-url.html) to manage (upload, share) objects on a store in a more reliable and secure way.
@@ -375,6 +376,8 @@ If the `proxy` option is undefined. The client performs the download action dire
 | `id` |  the object key. Note that the final computed **Key** takes into account the `prefix` option of the service. | yes |
 | `type` | the type of the content to be downloaded. | yes |
 | `options` | options to be forwarded to the underlying service methods. | no |
+
+</details>
 
 ## License
 
