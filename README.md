@@ -1,7 +1,6 @@
 # feathers-s3
 
 [![Latest Release](https://img.shields.io/github/v/tag/kalisio/feathers-s3?sort=semver&label=latest)](https://github.com/kalisio/feathers-s3/releases)
-[![Build Status](https://github.com/kalisio/feathers-s3/actions/workflows/main.yaml/badge.svg)](https://github.com/kalisio/feathers-s3/actions/workflows/main.yaml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Download Status](https://img.shields.io/npm/dm/@kalisio/feathers-s3.svg?style=flat-square)](https://www.npmjs.com/package/@kalisio/feathers-s3)
 
