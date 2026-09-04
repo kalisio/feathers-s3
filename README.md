@@ -10,6 +10,15 @@
 
 > `feathers-s3` allows to deal with [AWS S3 API](https://docs.aws.amazon.com/AmazonS3/latest/API/Welcome.html) compatible storages to manage file upload/download in a FeathersJS application.
 
+
+> [!IMPORTANT]
+> This package has moved to the [`feathers-ekosystem`](https://github.com/kalisio/feathers-ekosystem) monorepo.
+>
+> Please use and follow the version maintained in `packages/feathers-s3` from now on.
+>
+> This repository is no longer maintained.
+
+
 Unlike the solution [feathers-blob](https://github.com/feathersjs-ecosystem/feathers-blob), which provides a store abstraction, `feathers-s3` is limited to
 be used with stores providing a S3 compatible API. However, it takes advantage of the **S3 API** by using [presigned URLs](https://docs.aws.amazon.com/AmazonS3/latest/userguide/using-presigned-url.html) to manage (upload, share) objects on a store in a more reliable and secure way.
 
@@ -371,6 +380,12 @@ If the `proxy` option is undefined. The client performs the download action dire
 
 Licensed under the [MIT license](LICENSE).
 
-Copyright (c) 2017-20xx [Kalisio](https://kalisio.com)
+Copyright (c) 2017-present [Kalisio](https://kalisio.com)
 
-[![Kalisio](https://kalisio.github.io/kalisioscope/kalisio/kalisio-logo-black-256x84.png)](https://kalisio.com)
+<a href="https://kalisio.com">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="https://kalisio.github.io/kalisioscope/kalisio/kalisio-logo-dark.svg">
+    <source media="(prefers-color-scheme: light)" srcset="https://kalisio.github.io/kalisioscope/kalisio/kalisio-logo-light.svg">
+    <img alt="Kalisio" src="https://kalisio.github.io/kalisioscope/kalisio/kalisio-logo-light.svg" height="96">
+  </picture>
+</a>
